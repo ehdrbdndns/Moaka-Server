@@ -1,9 +1,14 @@
 package com.moaka.springserver.controller;
 
-import com.moaka.springserver.entity.User;
+import com.moaka.springserver.common.exception.ErrorCode;
+import com.moaka.springserver.common.exception.ErrorResult;
+import com.moaka.springserver.common.exception.NotFoundException;
+import com.moaka.springserver.dto.User;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,5 +44,10 @@ public class TestController {
             @RequestBody(required = true) User user){
 
         return true;
+    }
+
+    @GetMapping("/nfe")
+    public ResponseEntity notFound() {
+        throw new NotFoundException(ErrorCode.INDEX_NOT_FOUND.getErrorCode(), ErrorCode.INDEX_NOT_FOUND.getErrorMessage());
     }
 }

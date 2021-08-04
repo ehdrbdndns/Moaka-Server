@@ -1,4 +1,4 @@
-package com.moaka.springserver.entity;
+package com.moaka.springserver.dto;
 
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
