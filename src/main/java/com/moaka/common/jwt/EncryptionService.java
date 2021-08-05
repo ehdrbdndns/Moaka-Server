@@ -59,7 +59,7 @@ public class EncryptionService {
                 .withExpiresAt(Time.LongTimeStamp())
                 .withClaim("no", user.getNo())
                 .withClaim("id", user.getId())
-                .withClaim("pwd", encryptionSHA256(user.getPwd()))
+                .withClaim("pwd", user.getPwd())
                 .withClaim("aud", user.getAud())
                 .withClaim("age", user.getAge())
                 .withClaim("name", user.getName())
