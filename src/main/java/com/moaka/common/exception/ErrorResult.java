@@ -1,4 +1,4 @@
-package com.moaka.springserver.common.exception;
+package com.moaka.common.exception;
 
 import lombok.Getter;
 import lombok.Setter;

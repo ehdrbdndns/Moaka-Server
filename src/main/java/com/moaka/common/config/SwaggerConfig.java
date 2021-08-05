@@ -1,4 +1,4 @@
-package com.moaka.springserver.common.config;
+package com.moaka.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.moaka.springserver.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.moaka.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

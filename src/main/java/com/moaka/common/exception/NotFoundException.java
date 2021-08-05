@@ -1,9 +1,6 @@
-package com.moaka.springserver.common.exception;
+package com.moaka.common.exception;
 
 public class NotFoundException extends RuntimeException{
-    public final static int INDEX_NOT_FOUND = 101;
-    public final static int BOARD_NOT_FOUND = 201;
-
     private final int code;
 
     public int getCode() {
