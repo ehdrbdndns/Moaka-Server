@@ -1,4 +1,4 @@
-package com.moaka.springserver;
+package com.moaka;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
