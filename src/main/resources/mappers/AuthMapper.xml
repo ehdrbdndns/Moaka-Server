@@ -6,10 +6,10 @@
         SELECT * FROM user
         <choose>
             <when test='auth_type.equals("google")'>
-                WHERE aud=#{aud}
+                WHERE auth_type='google' AND aud=#{aud}
             </when>
             <otherwise>
-                WHERE id=#{id} AND pwd=#{pwd}
+                WHERE auth_type='local' AND id=#{id} AND pwd=#{pwd}
             </otherwise>
         </choose>
     </select>

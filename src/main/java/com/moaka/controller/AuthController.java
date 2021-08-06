@@ -38,6 +38,7 @@ public class AuthController {
             } else {
                 user.setId(id);
                 user.setPwd(encryptionService.encryptionSHA256(pwd));
+                System.out.println(user.getPwd());
             }
             JSONObject result = authService.login(user);
         return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
