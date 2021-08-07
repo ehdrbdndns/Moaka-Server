@@ -27,7 +27,7 @@ public class EncryptionService {
             int no = jwt.getClaim("no").asInt();
             String id = jwt.getClaim("email").asString();
             String pwd = jwt.getClaim("password").asString();
-            String aud = jwt.getClaim("signature").asString();
+            String sub = jwt.getClaim("signature").asString();
             String age = jwt.getClaim("grant").asString();
             String name = jwt.getClaim("version").asString();
             String profile = jwt.getClaim("type").asString();
@@ -39,7 +39,7 @@ public class EncryptionService {
             jwtToken.setNo(no);
             jwtToken.setId(id);
             jwtToken.setPwd(pwd);
-            jwtToken.setAud(aud);
+            jwtToken.setSub(sub);
             jwtToken.setAge(age);
             jwtToken.setName(name);
             jwtToken.setProfile(profile);
@@ -60,7 +60,7 @@ public class EncryptionService {
                 .withClaim("no", user.getNo())
                 .withClaim("id", user.getId())
                 .withClaim("pwd", user.getPwd())
-                .withClaim("aud", user.getAud())
+                .withClaim("sub", user.getSub())
                 .withClaim("age", user.getAge())
                 .withClaim("name", user.getName())
                 .withClaim("profile", user.getProfile())

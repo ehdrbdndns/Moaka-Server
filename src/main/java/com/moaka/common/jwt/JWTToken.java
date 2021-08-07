@@ -12,7 +12,7 @@ import lombok.ToString;
 public class JWTToken {
     // User Dto와 동일
     private int no;
-    private String aud;
+    private String sub;
     private String id;
     private String pwd;
     private String name;
