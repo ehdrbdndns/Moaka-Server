@@ -9,7 +9,7 @@ import lombok.ToString;
 public class User {
     private int no;
     @ApiParam(value = "사용자 고유 번호", required = false, example = "sub 값")
-    private String aud;
+    private String sub;
     @ApiParam(value = "아이디", required = false, example = "ID 값")
     private String id;
     @ApiParam(value = "비밀번호", required = false, example = "PWD 값")

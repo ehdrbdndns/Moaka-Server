@@ -21,10 +21,10 @@ public class AuthController {
     @Autowired
     EncryptionService encryptionService;
 
-    @ApiOperation(value = "로그인", notes = "구글 사용자는 aud, 로컬 사용자는 ID와 PWD로 로그인을 합니다.")
+    @ApiOperation(value = "로그인", notes = "구글 사용자는 sub, 로컬 사용자는 ID와 PWD로 로그인을 합니다.")
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> login(@ApiParam(value = "aud", required = false, example = "123456789")
-                        @RequestParam(value = "aud", required = false) String aud,
+    public ResponseEntity<String> login(@ApiParam(value = "sub", required = false, example = "123456789")
+                        @RequestParam(value = "sub", required = false) String sub,
                                             @ApiParam(value = "id", required = false)
                         @RequestParam(value = "id", required = false) String id,
                                             @ApiParam(value = "pwd", required = false)
@@ -34,7 +34,7 @@ public class AuthController {
             User user = new User();
             user.setAuth_type(auth_type);
             if(auth_type.equals("google")) {
-                user.setAud(aud);
+                user.setSub(sub);
             } else {
                 user.setId(id);
                 user.setPwd(encryptionService.encryptionSHA256(pwd));

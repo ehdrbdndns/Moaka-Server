@@ -33,7 +33,7 @@ public class AuthService {
                 message = "he is not member";
             }
             result.put("isLogin", isLogin);
-            result.put("result", message);
+            result.put("token", message);
             return result;
         } catch (Exception e){
             e.printStackTrace();
