@@ -39,12 +39,6 @@ public class AuthService {
                 System.out.println("로그인 성공");
                 isLogin = true;
                 message = encryptionService.encryptionJWT(userInfo);
-                ArrayList<Archive> archiveList = archiveMapper.retrieveLocalArchiveFromUserNo(userInfo.getNo());
-                for(int i = 0; i < archiveList.size(); i++) {
-                    Archive archive = archiveList.get(i);
-                    archive.setSectionList(sectionMapper.retrieveSectionFromArchiveNo(archive.getNo()));
-                }
-                result.put("directory", archiveList);
             } else {
                 System.out.println("로그인 실패");
                 isLogin = false;

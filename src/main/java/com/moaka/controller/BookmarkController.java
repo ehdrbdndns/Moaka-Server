@@ -34,13 +34,16 @@ public class BookmarkController {
                                                  @ApiParam(value = "description", example = "내용")
                                                  @RequestParam(value = "description") String description,
                                                  @ApiParam(value = "thumbnail", example = "썸네일")
-                                                 @RequestParam(value = "thumbnail") String thumbnail) {
+                                                 @RequestParam(value = "thumbnail") String thumbnail,
+                                                 @ApiParam(value = "section_no", example = "섹션 식별 번호")
+                                                 @RequestParam(value = "section_no") int section_no) {
         try {
             Chunk chunk = new Chunk();
             chunk.setLink(link);
             chunk.setTitle(title);
             chunk.setDescription(description);
             chunk.setThumbnail(thumbnail);
+            chunk.setSection_no(section_no);
             bookmarkService.insertBookmarkToChunk(chunk, user_no);
             JSONObject result = new JSONObject();
             result.put("isSuccess", true);

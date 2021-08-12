@@ -2,9 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.moaka.mapper.BookmarkMapper">
-    <select id="retrieveSectionNoOfDefaultArchive" resultType="int">
-        select sec.no from archive ar, section sec where ar.user_no = ${no} AND sec.archive_no = ar.no
-    </select>
     <insert id="insertBookmarkToChunk">
         insert into chunk(link, title, description, thumbnail, section_no, regdate)
         values(#{link}, #{title}, #{description}, #{thumbnail}, ${section_no}, #{regdate})
