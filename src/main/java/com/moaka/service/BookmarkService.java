@@ -22,8 +22,8 @@ public class BookmarkService {
     BookmarkMapper bookmarkMapper;
 
     public void insertBookmarkToChunk(Chunk chunk, int user_no) throws Exception {
-        int section_no = bookmarkMapper.retrieveSectionNoOfDefaultArchive(user_no);
-        chunk.setSection_no(section_no);
+//        int section_no = bookmarkMapper.retrieveSectionNoOfDefaultArchive(user_no);
+//        chunk.setSection_no(section_no);
         chunk.setRegdate(getToday());
         bookmarkMapper.insertBookmarkToChunk(chunk);
     }
