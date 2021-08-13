@@ -3,7 +3,7 @@
 
 <mapper namespace="com.moaka.mapper.BookmarkMapper">
     <insert id="insertBookmarkToChunk">
-        insert into chunk(link, title, description, thumbnail, section_no, regdate)
-        values(#{link}, #{title}, #{description}, #{thumbnail}, ${section_no}, #{regdate})
+        insert into chunk(link, link_title, link_description, title, description, thumbnail, section_no, regdate)
+        values(#{link}, #{link_title}, #{link_description}, #{title}, #{description}, #{thumbnail}, ${section_no}, #{regdate})
     </insert>
 </mapper>
