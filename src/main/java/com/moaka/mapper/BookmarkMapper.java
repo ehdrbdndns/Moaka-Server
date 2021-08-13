@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface BookmarkMapper {
-    int retrieveSectionNoOfDefaultArchive(int user_no);
     void insertBookmarkToChunk(Chunk chunk);
 }

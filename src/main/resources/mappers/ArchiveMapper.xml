@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moaka.mapper.ArchiveMapper">
+    <select id="retrieveLocalArchiveFromUserNo" resultType="Archive">
+        select * from archive
+        where user_no = ${user_no} AND privacy_type='local'
+    </select>
+</mapper>

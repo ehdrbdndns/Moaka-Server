@@ -10,6 +10,10 @@ public class Chunk {
     private int no;
     @ApiParam(value = "URL", required = false, example = "https://moaka.com")
     private String link;
+    @ApiParam(value = "URL 제목", required = false)
+    private String link_title;
+    @ApiParam(value = "URL 내용", required = false)
+    private String link_description;
     @ApiParam(value = "제목", required = false)
     private String title;
     @ApiParam(value = "내용", required = false)
