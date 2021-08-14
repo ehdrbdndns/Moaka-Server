@@ -3,8 +3,12 @@ package com.moaka.service;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
 import com.moaka.common.jwt.EncryptionService;
+import com.moaka.dto.Archive;
 import com.moaka.dto.User;
+import com.moaka.mapper.ArchiveMapper;
 import com.moaka.mapper.AuthMapper;
+import com.moaka.mapper.SectionMapper;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
     @Autowired
     AuthMapper authMapper;
+    @Autowired
+    ArchiveMapper archiveMapper;
+    @Autowired
+    SectionMapper sectionMapper;
     
     @Autowired
     EncryptionService encryptionService;

@@ -29,18 +29,28 @@ public class BookmarkController {
                                                  @RequestParam(value = "user_no") int user_no,
                                                  @ApiParam(value = "link", example = "https://moaka.com")
                                                  @RequestParam(value = "link") String link,
+                                                 @ApiParam(value = "link_title")
+                                                 @RequestParam(value = "link_title") String link_title,
+                                                 @ApiParam(value = "link_description")
+                                                 @RequestParam(value = "link_description") String link_description,
                                                  @ApiParam(value = "title", example = "제목")
                                                  @RequestParam(value = "title") String title,
                                                  @ApiParam(value = "description", example = "내용")
                                                  @RequestParam(value = "description") String description,
                                                  @ApiParam(value = "thumbnail", example = "썸네일")
-                                                 @RequestParam(value = "thumbnail") String thumbnail) {
+                                                 @RequestParam(value = "thumbnail") String thumbnail,
+                                                 @ApiParam(value = "section_no", example = "섹션 식별 번호")
+                                                 @RequestParam(value = "section_no") int section_no) {
         try {
+            System.out.println(user_no);
             Chunk chunk = new Chunk();
             chunk.setLink(link);
+            chunk.setLink_title(link_title);
+            chunk.setLink_description(link_description);
             chunk.setTitle(title);
             chunk.setDescription(description);
             chunk.setThumbnail(thumbnail);
+            chunk.setSection_no(section_no);
             bookmarkService.insertBookmarkToChunk(chunk, user_no);
             JSONObject result = new JSONObject();
             result.put("isSuccess", true);

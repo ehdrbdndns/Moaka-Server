@@ -18,6 +18,11 @@ public class TestController {
     @Autowired
     public TestService testService;
 
+    @GetMapping(value = "/")
+    public String testMain() {
+        return "tset api result return!";
+    }
+
     @ApiOperation(value = "사용자 정보 조회", notes = "UserId를 이용하여 사용자 정보를 조회합니다.")
     @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Object findUser(
