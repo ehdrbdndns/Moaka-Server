@@ -16,7 +16,7 @@ public class JWTToken {
     private String id;
     private String pwd;
     private String name;
-    private String age;
+    private int age;
     private String profile;
     private String auth_type;
     // 사용자 생성 날짜

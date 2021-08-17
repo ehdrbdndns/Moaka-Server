@@ -25,14 +25,14 @@ public class EncryptionService {
                     .build(); //Reusable verifier instance
             DecodedJWT jwt = verifier.verify(encryptedJWT);
             int no = jwt.getClaim("no").asInt();
-            String id = jwt.getClaim("email").asString();
-            String pwd = jwt.getClaim("password").asString();
-            String sub = jwt.getClaim("signature").asString();
-            String age = jwt.getClaim("grant").asString();
-            String name = jwt.getClaim("version").asString();
-            String profile = jwt.getClaim("type").asString();
-            String auth_type = jwt.getClaim("name").asString();
-            String regdate = jwt.getClaim("name").asString();
+            String id = jwt.getClaim("id").asString();
+            String pwd = jwt.getClaim("pwd").asString();
+            String sub = jwt.getClaim("sub").asString();
+            int age = jwt.getClaim("age").asInt();
+            String name = jwt.getClaim("name").asString();
+            String profile = jwt.getClaim("profile").asString();
+            String auth_type = jwt.getClaim("auth_type").asString();
+            String regdate = jwt.getClaim("regdate").asString();
             String version = jwt.getClaim("version").asString();
 
             JWTToken jwtToken = new JWTToken();
