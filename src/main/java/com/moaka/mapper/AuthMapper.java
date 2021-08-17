@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface AuthMapper {
     User login(User user);
+    void register(User user);
 }

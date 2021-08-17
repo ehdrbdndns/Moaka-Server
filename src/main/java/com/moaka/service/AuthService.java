@@ -50,4 +50,12 @@ public class AuthService {
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
     }
+
+    public JSONObject register(User params) throws Exception {
+        JSONObject result = new JSONObject();
+        authMapper.register(params);
+        result.put("no", params.getNo());
+        result.put("isSuccess", true);
+        return result;
+    }
 }
