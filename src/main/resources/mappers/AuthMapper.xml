@@ -13,4 +13,17 @@
             </otherwise>
         </choose>
     </select>
+
+    <insert id="register" parameterType="User">
+        insert into user(sub, id, pwd, age, name, profile, auth_type, regdate)
+        values(#{sub}, #{id}, #{pwd}, ${age}, #{name}, #{profile}, #{auth_type}, #{regdate})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+     <select id="retrieveUserById" resultType="User">
+        select * from user
+        where id=#{id}
+     </select>
 </mapper>

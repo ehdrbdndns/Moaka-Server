@@ -17,7 +17,7 @@ public class User {
     @ApiParam(value = "사용자 이름", required = false, example = "홍길동")
     private String name;
     @ApiParam(value = "사용자 나이", required = false, example = "21")
-    private String age;
+    private int age;
     @ApiParam(value = "사용자 프로파일 이미지", required = false, example = "https://profile.com/img.png")
     private String profile;
     @ApiParam(value = "사용자 Auth 타입", required = false, example = "google or local")

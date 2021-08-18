@@ -1,5 +1,7 @@
 package com.moaka.controller;
 
+import com.moaka.common.exception.ErrorCode;
+import com.moaka.common.exception.InternalServiceException;
 import com.moaka.common.jwt.EncryptionService;
 import com.moaka.dto.User;
 import com.moaka.service.AuthService;
@@ -13,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 @RestController
 public class AuthController {
@@ -42,5 +46,50 @@ public class AuthController {
             }
             JSONObject result = authService.login(user);
         return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "회원가입", notes = "구글 사용자는 sub와 사용자 정보, 로컬 사용자는 ID PWD와 사용자 정보로 회원가입을 합니다.")
+    @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> register(@ApiParam(value = "sub", required = false)
+                                               @RequestParam(value = "sub", required = false, defaultValue = "") String sub,
+                                           @ApiParam(value = "id", required = true, example = "test@test.com")
+                                               @RequestParam(value = "id", required = true) String id,
+                                           @ApiParam(value = "pwd", required = false)
+                                               @RequestParam(value = "pwd", required = false, defaultValue = "") String pwd,
+                                           @ApiParam(value = "name", required = true)
+                                               @RequestParam(value = "name", required = true) String name,
+                                           @ApiParam(value = "profile", required = false)
+                                               @RequestParam(value = "profile", required = false, defaultValue = "./img/moaka_logo.png") String profile,
+                                           @ApiParam(value = "auth_type ", required = true, example = "google")
+                                               @RequestParam(value = "auth_type", required = true) String auth_type) {
+        try{
+            User params = new User();
+            params.setSub(sub);
+            params.setId(id);
+            if(pwd.equals("")) {
+               params.setPwd(pwd);
+            } else {
+                pwd = encryptionService.encryptionSHA256(pwd);
+                params.setPwd(pwd);
+            }
+            params.setName(name);
+            params.setProfile(profile);
+            params.setAuth_type(auth_type);
+            params.setAge(0);
+            params.setRegdate(getToday());
+
+            JSONObject result = authService.register(params);
+
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    public String getToday(){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(cal.getTime());
     }
 }

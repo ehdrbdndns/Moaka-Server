@@ -50,4 +50,20 @@ public class AuthService {
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
     }
+
+    public JSONObject register(User params) throws Exception {
+        JSONObject result = new JSONObject();
+        // 회원 유저 여부
+        User user = authMapper.retrieveUserById(params.getId());
+        if(user != null) {
+            System.out.println("기존 유저입니다.");
+            result.put("isSuccess", false);
+        } else {
+            System.out.println("기존 유저가 아닙니다.");
+            authMapper.register(params);
+            result.put("no", params.getNo());
+            result.put("isSuccess", true);
+        }
+        return result;
+    }
 }
