@@ -1,56 +1,42 @@
 package com.moaka.controller;
 
-import java.util.Objects;
-
-import com.moaka.common.config.JwtTokenUtil;
-import com.moaka.dto.JwtRequest;
-import com.moaka.dto.JwtResponse;
-import com.moaka.service.JwtUserDetailsService;
+import com.moaka.common.config.security.JwtTokenProvider;
+import com.moaka.common.config.security.user.CustomUserDetailService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+
+@RequiredArgsConstructor
 @RestController
-@CrossOrigin
 public class JwtAuthenticationController {
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private CustomUserDetailService userDetailsService;
 
-    @Autowired
-    private JwtUserDetailsService userDetailsService;
-
+    @ApiOperation(value = "JWT 토큰 받기 인증 테스트", notes = "북마크를 사용자 개인 저장소에 저장합니다.")
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-
-        final UserDetails userDetails = userDetailsService
-            .loadUserByUsername(authenticationRequest.getUsername());
-
-        final String token = jwtTokenUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new JwtResponse(token));
+    public String createAuthenticationToken(@ApiParam(value = "id", example = "ehdrbdndns@naver.com")
+                                                @RequestParam(value = "id") String id) throws Exception {
+        return jwtTokenProvider.createToken(id, Collections.singletonList("ROLE_USER"));
     }
 
-    private void authenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
+    @ApiOperation(value = "JWT 토큰 인증 테스트", notes = "북마크를 사용자 개인 저장소에 저장합니다.")
+    @RequestMapping(value = "/user/authenticate", method = RequestMethod.POST)
+    public String checkAuthenticationToken() throws Exception {
+        return "hi";
     }
 }

@@ -39,7 +39,7 @@ public class BookmarkController {
                                                  @RequestParam(value = "description") String description,
                                                  @ApiParam(value = "thumbnail", example = "썸네일")
                                                  @RequestParam(value = "thumbnail") String thumbnail,
-                                                 @ApiParam(value = "section_no", example = "섹션 식별 번호")
+                                                 @ApiParam(value = "section_no")
                                                  @RequestParam(value = "section_no") int section_no) {
         try {
             System.out.println(user_no);
