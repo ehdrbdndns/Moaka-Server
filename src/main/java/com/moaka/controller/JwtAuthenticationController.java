@@ -31,7 +31,7 @@ public class JwtAuthenticationController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public String createAuthenticationToken(@ApiParam(value = "id", example = "ehdrbdndns@naver.com")
                                                 @RequestParam(value = "id") String id) throws Exception {
-        return jwtTokenProvider.createToken(id, Collections.singletonList("ROLE_USER"));
+        return jwtTokenProvider.createToken(id, Collections.singletonList("ROLE_USER"), 1, "testName", "./img/");
     }
 
     @ApiOperation(value = "JWT 토큰 인증 테스트", notes = "북마크를 사용자 개인 저장소에 저장합니다.")
