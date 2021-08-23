@@ -5,4 +5,12 @@
     <select id="retrieveSectionFromArchiveNo" resultType="Section">
         select * from section where archive_no = ${archive_no}
     </select>
+
+    <insert id="insertSection">
+        insert into section(title, description, archive_no,  regdate) value (#{title}, #{description}, ${archive_no}, #{regdate})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
 </mapper>
