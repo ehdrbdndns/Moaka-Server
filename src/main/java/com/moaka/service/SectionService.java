@@ -6,7 +6,10 @@ import com.moaka.dto.Tag;
 import com.moaka.mapper.BookmarkMapper;
 import com.moaka.mapper.SectionMapper;
 import com.moaka.mapper.TagMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +29,9 @@ public class SectionService {
         String today = getToday();
         section.setRegdate(today);
         sectionMapper.insertSection(section);
-        for(int i = 0; i < section.getTagList().size(); i++) {
+        for(int i = 0; i < section.getTag_list().size(); i++) {
             Tag tag = new Tag();
-            tag.setTag(section.getTagList().get(i));
+            tag.setTag(section.getTag_list().get(i));
             tag.setRegdate(today);
             tag.setSection_no(section.getNo());
             tag.setStore_type("section");

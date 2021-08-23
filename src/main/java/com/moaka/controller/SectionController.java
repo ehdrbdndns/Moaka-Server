@@ -8,6 +8,7 @@ import com.moaka.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,19 +32,23 @@ public class SectionController {
                                                 @RequestParam(value = "title") String title,
                                                 @ApiParam(value = "description", required = true)
                                                     @RequestParam(value = "description") String description,
-                                                @ApiParam(value = "tagList", required = true)
-                                                    @RequestParam(value = "tagList") ArrayList<String> tagList)
+                                                @ApiParam(value = "tag_list", required = true)
+                                                    @RequestParam(value = "tag_list") ArrayList<String> tag_list)
     {
         try{
             Section params = new Section();
             params.setArchive_no(archive_no);
             params.setTitle(title);
             params.setDescription(description);
-            params.setTagList(tagList);
+            params.setTag_list(tag_list);
+
+            System.out.println(params);
 
             sectionService.insertSection(params);
 
-            return null;
+            JSONObject result = new JSONObject();
+            result.put("isSuccess", true);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         }catch (Exception e){
             e.printStackTrace();
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());

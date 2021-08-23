@@ -21,5 +21,5 @@ public class Section {
     private String regdate;
 
     @ApiParam(value = "섹션 태그 리스트", required = false)
-    private ArrayList<String> tagList;
+    private ArrayList<String> tag_list;
 }
