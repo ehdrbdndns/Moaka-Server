@@ -11,4 +11,5 @@ import java.util.ArrayList;
 public interface SectionMapper {
     ArrayList<Section> retrieveSectionFromArchiveNo(int archive_no);
     void insertSection(Section section);
+    void deleteSection(int no);
 }

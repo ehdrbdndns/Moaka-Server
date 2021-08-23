@@ -40,6 +40,10 @@ public class SectionService {
         }
     }
 
+    public void deleteSection(int no) throws Exception {
+        sectionMapper.deleteSection(no);
+    }
+
     public String getToday(){
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

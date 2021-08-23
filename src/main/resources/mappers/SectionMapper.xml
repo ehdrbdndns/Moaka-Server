@@ -13,4 +13,7 @@
         </selectKey>
     </insert>
 
+    <delete id="deleteSection">
+        delete from section where no=${no}
+    </delete>
 </mapper>
