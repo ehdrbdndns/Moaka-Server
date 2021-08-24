@@ -27,6 +27,21 @@ public class SectionService {
     @Autowired
     TagMapper tagMapper;
 
+    public void updateSection(Section params) throws Exception {
+        sectionMapper.updateSection(params);
+        tagMapper.deleteTagBySectionNo(params.getNo());
+        String today = getToday();
+        for(int i = 0; i < params.getTag_list().size(); i++) {
+            Tag tag = new Tag();
+            tag.setTag(params.getTag_list().get(i));
+            tag.setRegdate(today);
+            tag.setSection_no(params.getNo());
+            tag.setStore_type("section");
+
+            tagMapper.insertSectionTag(tag);
+        }
+    }
+
     public JSONArray retrieveSectionByArchiveNo(int archive_no) throws Exception {
         JSONArray result = new JSONArray();
         ArrayList<Section> sectionList = sectionMapper.retrieveSectionByArchiveNo(archive_no);

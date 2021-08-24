@@ -11,4 +11,8 @@
         select tag from tag
         where store_type = 'section' AND section_no = ${section_no}
     </select>
+
+    <delete id="deleteTagBySectionNo">
+        delete from tag where section_no = ${section_no}
+    </delete>
 </mapper>

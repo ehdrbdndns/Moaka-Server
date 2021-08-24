@@ -12,4 +12,5 @@ import java.util.ArrayList;
 public interface TagMapper {
     void insertSectionTag(Tag tag);
     ArrayList<String> retrieveTagItemBySectionNo(int section_no);
+    void deleteTagBySectionNo(int section_no);
 }

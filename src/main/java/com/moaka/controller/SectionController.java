@@ -24,6 +24,21 @@ public class SectionController {
     @Autowired
     SectionService sectionService;
 
+    @ApiOperation(value = "섹션 수정", notes = "사용자의 섹션을 수정합니다.")
+    @PostMapping(value = "/user/updateSection", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> modifySection(@ApiParam(value = "섹션과 태그 리스트 정보 기입", required = true)
+                                                @RequestBody Section params) {
+        try {
+            sectionService.updateSection(params);
+            JSONObject result = new JSONObject();
+            result.put("isSuccess", true);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
     @ApiOperation(value = "섹션 리스트 가져오기", notes = "사용자의 섹션 리스트를 불러옵니다.")
     @PostMapping(value = "/user/getSection", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getSection(

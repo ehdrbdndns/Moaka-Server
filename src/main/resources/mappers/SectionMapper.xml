@@ -16,4 +16,10 @@
     <delete id="deleteSection">
         delete from section where no=${no}
     </delete>
+
+    <update id="updateSection">
+        update section
+        SET title = #{title}, description = #{description}
+        WHERE no = ${no}
+    </update>
 </mapper>
