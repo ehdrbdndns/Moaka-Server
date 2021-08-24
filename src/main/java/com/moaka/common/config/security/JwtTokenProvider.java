@@ -69,6 +69,7 @@ public class JwtTokenProvider {
 
     // Request의 Header에서 token 값을 가져옵니다. "Bearer" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
+        System.out.println("토큰 확인 중...");
         return request.getHeader("Bearer");
     }
 

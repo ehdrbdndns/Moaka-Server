@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moaka.mapper.TagMapper">
+    <insert id="insertSectionTag">
+        insert into tag(tag, section_no, store_type, regdate)
+        values(#{tag}, ${section_no}, 'section', #{regdate})
+    </insert>
+
+    <select id="retrieveTagItemBySectionNo" resultType="String">
+        select tag from tag
+        where store_type = 'section' AND section_no = ${section_no}
+    </select>
+
+    <delete id="deleteTagBySectionNo">
+        delete from tag where section_no = ${section_no}
+    </delete>
+</mapper>
