@@ -6,6 +6,7 @@ import com.moaka.dto.Tag;
 import com.moaka.mapper.BookmarkMapper;
 import com.moaka.mapper.SectionMapper;
 import com.moaka.mapper.TagMapper;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 @Service
@@ -24,6 +26,26 @@ public class SectionService {
 
     @Autowired
     TagMapper tagMapper;
+
+    public JSONArray retrieveSectionByArchiveNo(int archive_no) throws Exception {
+        JSONArray result = new JSONArray();
+        ArrayList<Section> sectionList = sectionMapper.retrieveSectionByArchiveNo(archive_no);
+        for(int i = 0; i < sectionList.size(); i++) {
+            JSONObject sectionInfo = new JSONObject();
+            Section section = sectionList.get(i);
+            ArrayList<String> tagList = tagMapper.retrieveTagItemBySectionNo(section.getNo());
+            sectionInfo.put("no", section.getNo());
+            sectionInfo.put("title", section.getTitle());
+            sectionInfo.put("archive_no", section.getArchive_no());
+            sectionInfo.put("description", section.getDescription());
+            sectionInfo.put("regdate", section.getRegdate());
+            sectionInfo.put("tag_list", tagList);
+            // TODO 주후 chunk 리스트 데이터를 가지고 오는 로직도 추가해야 함
+            // sectionInfo.put("chunkList", chunkList);
+            result.put(sectionInfo);
+        }
+        return result;
+    }
 
     public void insertSection(Section section) throws Exception {
         String today = getToday();

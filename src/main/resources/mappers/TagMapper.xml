@@ -6,4 +6,9 @@
         insert into tag(tag, section_no, store_type, regdate)
         values(#{tag}, ${section_no}, 'section', #{regdate})
     </insert>
+
+    <select id="retrieveTagItemBySectionNo" resultType="String">
+        select tag from tag
+        where store_type = 'section' AND section_no = ${section_no}
+    </select>
 </mapper>
