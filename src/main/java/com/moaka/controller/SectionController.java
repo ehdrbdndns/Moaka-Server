@@ -42,12 +42,7 @@ public class SectionController {
     @PostMapping(value = "/user/insertSection", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> insertSection(@RequestBody Section params) {
         try {
-            System.out.println(params);
-
-            sectionService.insertSection(params);
-
-            JSONObject result = new JSONObject();
-            result.put("isSuccess", true);
+            JSONObject result = sectionService.insertSection(params);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

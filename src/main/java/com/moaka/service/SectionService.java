@@ -47,7 +47,8 @@ public class SectionService {
         return result;
     }
 
-    public void insertSection(Section section) throws Exception {
+    public JSONObject insertSection(Section section) throws Exception {
+        JSONObject result = new JSONObject();
         String today = getToday();
         section.setRegdate(today);
         sectionMapper.insertSection(section);
@@ -60,6 +61,8 @@ public class SectionService {
 
             tagMapper.insertSectionTag(tag);
         }
+        result.put("section_no", section.getNo());
+        return result;
     }
 
     public void deleteSection(int no) throws Exception {
