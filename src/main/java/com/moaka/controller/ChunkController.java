@@ -3,7 +3,6 @@ package com.moaka.controller;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
 import com.moaka.dto.Chunk;
-import com.moaka.dto.User;
 import com.moaka.service.BookmarkService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -16,10 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.NoSuchAlgorithmException;
-
 @RestController
-public class BookmarkController {
+public class ChunkController {
     @Autowired
     BookmarkService bookmarkService;
 

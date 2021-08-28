@@ -22,5 +22,7 @@ public class Chunk {
     private String thumbnail;
     @ApiParam(value = "청크를 담고있는 섹션 번호", required = false)
     private int section_no;
+    @ApiParam(value = "청크 만든 사람의 유저 번호", required = false)
+    private int user_no;
     private String regdate;
 }

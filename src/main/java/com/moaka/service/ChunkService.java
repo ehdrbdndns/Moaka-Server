@@ -1,13 +1,7 @@
 package com.moaka.service;
 
-import com.moaka.common.exception.ErrorCode;
-import com.moaka.common.exception.InternalServiceException;
-import com.moaka.common.jwt.EncryptionService;
 import com.moaka.dto.Chunk;
-import com.moaka.dto.User;
-import com.moaka.mapper.AuthMapper;
 import com.moaka.mapper.BookmarkMapper;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +11,11 @@ import java.util.Calendar;
 
 @Service
 @Transactional
-public class BookmarkService {
+public class ChunkService {
     @Autowired
     BookmarkMapper bookmarkMapper;
 
-    public void insertBookmarkToChunk(Chunk chunk) throws Exception {
+    public void insertBookmarkToChunk(Chunk chunk, int user_no) throws Exception {
         chunk.setRegdate(getToday());
         bookmarkMapper.insertBookmarkToChunk(chunk);
     }

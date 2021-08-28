@@ -26,7 +26,7 @@ public class SectionController {
 
     @ApiOperation(value = "섹션 수정", notes = "사용자의 섹션을 수정합니다.")
     @PostMapping(value = "/user/updateSection", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> modifySection(@ApiParam(value = "섹션과 태그 리스트 정보 기입", required = true)
+    public ResponseEntity<String> updateSection(@ApiParam(value = "섹션과 태그 리스트 정보 기입", required = true)
                                                 @RequestBody Section params) {
         try {
             sectionService.updateSection(params);

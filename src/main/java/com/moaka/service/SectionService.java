@@ -4,6 +4,7 @@ import com.moaka.dto.Chunk;
 import com.moaka.dto.Section;
 import com.moaka.dto.Tag;
 import com.moaka.mapper.BookmarkMapper;
+import com.moaka.mapper.ChunkMapper;
 import com.moaka.mapper.SectionMapper;
 import com.moaka.mapper.TagMapper;
 import org.json.JSONArray;
@@ -27,6 +28,9 @@ public class SectionService {
     @Autowired
     TagMapper tagMapper;
 
+    @Autowired
+    ChunkMapper chunkMapper;
+
     public void updateSection(Section params) throws Exception {
         sectionMapper.updateSection(params);
         tagMapper.deleteTagBySectionNo(params.getNo());
@@ -49,12 +53,16 @@ public class SectionService {
             JSONObject sectionInfo = new JSONObject();
             Section section = sectionList.get(i);
             ArrayList<String> tagList = tagMapper.retrieveTagItemBySectionNo(section.getNo());
+            ArrayList<Chunk> chunkList = chunkMapper.retrieveChunkBySectionNo(section.getNo());
+
+            // TODO JSON 데이터 생성
             sectionInfo.put("no", section.getNo());
             sectionInfo.put("title", section.getTitle());
             sectionInfo.put("archive_no", section.getArchive_no());
             sectionInfo.put("description", section.getDescription());
             sectionInfo.put("regdate", section.getRegdate());
             sectionInfo.put("tag_list", tagList);
+            sectionInfo.put("chunk_list", chunkList);
             // TODO 주후 chunk 리스트 데이터를 가지고 오는 로직도 추가해야 함
             // sectionInfo.put("chunkList", chunkList);
             result.put(sectionInfo);
