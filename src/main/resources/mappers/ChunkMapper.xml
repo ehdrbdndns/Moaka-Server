@@ -6,10 +6,32 @@
         select *
         from chunk
         where section_no = ${section_no}
+        ORDER BY no DESC
     </select>
     <insert id="insertChunk">
-        insert into chunk(link, title, thumbnail, section_no, regdate, description, link_title, link_description)
-        values (#{link}, #{title}, #{thumbnail}, ${section_no}, #{regdate}, #{description}, #{link_title},
+        insert into chunk(link, title, thumbnail, section_no, user_no, regdate, description, link_title,
+                          link_description)
+        values (#{link}, #{title}, #{thumbnail}, ${section_no}, ${user_no}, #{regdate}, #{description}, #{link_title},
                 #{link_description})
     </insert>
+    <update id="updateChunk">
+        update chunk
+        set link=#{link},
+            title=#{title},
+            thumbnail=#{thumbnail},
+            description=#{description},
+            link_title=#{link_title},
+            link_description=#{link_description}
+        where no = ${no}
+    </update>
+    <delete id="deleteChunk">
+        delete
+        from chunk
+        where no = ${no}
+    </delete>
+    <select id="isAuthorityOfChunk" resultType="boolean">
+        SELECT EXISTS( SELECT *
+                       FROM chunk AS ch JOIN section AS se ON ch.section_no = se.no JOIN archive AS ar ON se.archive_no = ar.no
+                       WHERE ch.no=${no} AND ( ch.user_no= ${user_no} OR ar.user_no = ${user_no}));
+    </select>
 </mapper>

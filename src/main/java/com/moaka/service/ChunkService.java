@@ -2,22 +2,37 @@ package com.moaka.service;
 
 import com.moaka.dto.Chunk;
 import com.moaka.mapper.BookmarkMapper;
+import com.moaka.mapper.ChunkMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 @Service
 @Transactional
 public class ChunkService {
     @Autowired
-    BookmarkMapper bookmarkMapper;
+    ChunkMapper chunkMapper;
 
-    public void insertBookmarkToChunk(Chunk chunk, int user_no) throws Exception {
+    public void insertChunk(Chunk chunk) throws Exception {
         chunk.setRegdate(getToday());
-        bookmarkMapper.insertBookmarkToChunk(chunk);
+        chunkMapper.insertChunk(chunk);
+    }
+
+    public void updateChunk(Chunk params) throws Exception {
+        chunkMapper.updateChunk(params);
+    }
+
+    public boolean deleteChunk(Chunk params) throws Exception {
+        if(chunkMapper.isAuthorityOfChunk(params)) {
+            chunkMapper.deleteChunk(params);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getToday() {

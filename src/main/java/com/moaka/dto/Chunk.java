@@ -24,5 +24,6 @@ public class Chunk {
     private int section_no;
     @ApiParam(value = "청크 만든 사람의 유저 번호", required = false)
     private int user_no;
+
     private String regdate;
 }
