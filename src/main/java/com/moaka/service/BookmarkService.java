@@ -24,6 +24,7 @@ public class BookmarkService {
     public void insertBookmarkToChunk(Chunk chunk) throws Exception {
         chunk.setRegdate(getToday());
         bookmarkMapper.insertBookmarkToChunk(chunk);
+        bookmarkMapper.updateGroupNumOfChunk(chunk.getNo());
     }
 
     public String getToday() {

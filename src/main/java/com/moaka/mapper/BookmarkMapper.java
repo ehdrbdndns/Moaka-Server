@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface BookmarkMapper {
     void insertBookmarkToChunk(Chunk chunk);
+    void updateGroupNumOfChunk(int chunk_no);
 }

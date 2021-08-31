@@ -53,7 +53,7 @@ public class SectionService {
             JSONObject sectionInfo = new JSONObject();
             Section section = sectionList.get(i);
             ArrayList<String> tagList = tagMapper.retrieveTagItemBySectionNo(section.getNo());
-            ArrayList<Chunk> chunkList = chunkMapper.retrieveChunkBySectionNo(section.getNo());
+            ArrayList<Chunk> chunkList = chunkMapper.retrieveMainChunkBySectionNo(section.getNo());
 
             // TODO JSON 데이터 생성
             sectionInfo.put("no", section.getNo());
@@ -63,8 +63,6 @@ public class SectionService {
             sectionInfo.put("regdate", section.getRegdate());
             sectionInfo.put("tag_list", tagList);
             sectionInfo.put("chunk_list", chunkList);
-            // TODO 주후 chunk 리스트 데이터를 가지고 오는 로직도 추가해야 함
-            // sectionInfo.put("chunkList", chunkList);
             result.put(sectionInfo);
         }
         return result;

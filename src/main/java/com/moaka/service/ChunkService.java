@@ -20,6 +20,7 @@ public class ChunkService {
     public void insertChunk(Chunk chunk) throws Exception {
         chunk.setRegdate(getToday());
         chunkMapper.insertChunk(chunk);
+        chunkMapper.updateGroupNumOfChunk(chunk.getNo());
     }
 
     public void updateChunk(Chunk params) throws Exception {

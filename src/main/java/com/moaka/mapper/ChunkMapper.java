@@ -11,8 +11,9 @@ import java.util.ArrayList;
 @Repository
 @Mapper
 public interface ChunkMapper {
-    ArrayList<Chunk> retrieveChunkBySectionNo(int section_no);
+    ArrayList<Chunk> retrieveMainChunkBySectionNo(int section_no);
     void insertChunk(Chunk chunk);
+    void updateGroupNumOfChunk(int chunk_no);
     void updateChunk(Chunk chunk);
     void deleteChunk(Chunk chunk);
     boolean isAuthorityOfChunk(Chunk chunk);

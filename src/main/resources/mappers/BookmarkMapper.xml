@@ -3,7 +3,17 @@
 
 <mapper namespace="com.moaka.mapper.BookmarkMapper">
     <insert id="insertBookmarkToChunk">
-        insert into chunk(link, link_title, link_description, title, description, thumbnail, section_no, user_no, regdate)
-        values(#{link}, #{link_title}, #{link_description}, #{title}, #{description}, #{thumbnail}, ${section_no}, ${user_no}, #{regdate})
+        insert into chunk(link, link_title, link_description, title, description, thumbnail, section_no, user_no,
+        regdate, layer, content_order)
+        values(#{link}, #{link_title}, #{link_description}, #{title}, #{description}, #{thumbnail}, ${section_no},
+        ${user_no}, #{regdate}, 0, 1)
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
+    <update id="updateGroupNumOfChunk">
+        update chunk
+        set group_num = ${chunk_no}
+        where no = ${chunk_no}
+    </update>
 </mapper>
