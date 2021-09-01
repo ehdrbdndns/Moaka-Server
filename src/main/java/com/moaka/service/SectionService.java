@@ -52,8 +52,13 @@ public class SectionService {
         for(int i = 0; i < sectionList.size(); i++) {
             JSONObject sectionInfo = new JSONObject();
             Section section = sectionList.get(i);
-            ArrayList<String> tagList = tagMapper.retrieveTagItemBySectionNo(section.getNo());
+            ArrayList<String> sectionTagList = tagMapper.retrieveSectionTagBySectionNo(section.getNo());
             ArrayList<Chunk> chunkList = chunkMapper.retrieveMainChunkBySectionNo(section.getNo());
+
+            for(int j = 0; j < chunkList.size(); j++) {
+                ArrayList<String> chunkTagList = tagMapper.retrieveChunkTagByChunkNo(chunkList.get(j).getNo());
+                chunkList.get(j).setTagList(chunkTagList);
+            }
 
             // TODO JSON 데이터 생성
             sectionInfo.put("no", section.getNo());
@@ -61,7 +66,7 @@ public class SectionService {
             sectionInfo.put("archive_no", section.getArchive_no());
             sectionInfo.put("description", section.getDescription());
             sectionInfo.put("regdate", section.getRegdate());
-            sectionInfo.put("tag_list", tagList);
+            sectionInfo.put("tag_list", sectionTagList);
             sectionInfo.put("chunk_list", chunkList);
             result.put(sectionInfo);
         }

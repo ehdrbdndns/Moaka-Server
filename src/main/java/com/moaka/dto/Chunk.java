@@ -37,7 +37,7 @@ public class Chunk {
     private String regdate;
 
     // 청크의 댓글 리스트
+    private ArrayList<String> tagList;
     private ArrayList<Comment> commentList;
     private ArrayList<Chunk> chunkList;
-
 }

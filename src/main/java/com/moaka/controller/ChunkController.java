@@ -62,7 +62,6 @@ public class ChunkController {
                                               @RequestBody Chunk params,
                                               @RequestHeader Map<String, String> headers) {
         try {
-            System.out.println(headers.get("bearer"));
             params.setUser_no(jwtTokenProvider.getUserNo(headers.get("bearer")));
             boolean isSuccess = chunkService.deleteChunk(params);
             JSONObject result = new JSONObject();
