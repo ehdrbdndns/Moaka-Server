@@ -11,10 +11,12 @@ import java.util.ArrayList;
 @Repository
 @Mapper
 public interface ChunkMapper {
-    ArrayList<Chunk> retrieveMainChunkBySectionNo(int section_no);
+    ArrayList<Chunk> retrieveMainChunkBySectionNo(@Param("section_no") int section_no, @Param("user_no") int user_no);
     void insertChunk(Chunk chunk);
     void updateGroupNumOfChunk(int chunk_no);
     void updateChunk(Chunk chunk);
     void deleteChunk(Chunk chunk);
-    boolean isAuthorityOfChunk(Chunk chunk);
+    boolean isAuthorityOfDeleteChunk(Chunk chunk);
+    boolean isAuthorityOfInsertChunk(int no);
+    boolean isAuthorityOfUpdateChunk(int no);
 }

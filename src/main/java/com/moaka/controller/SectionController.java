@@ -1,5 +1,6 @@
 package com.moaka.controller;
 
+import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
 import com.moaka.dto.Archive;
@@ -18,11 +19,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @RestController
 public class SectionController {
     @Autowired
     SectionService sectionService;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @ApiOperation(value = "섹션 수정", notes = "사용자의 섹션을 수정합니다.")
     @PostMapping(value = "/user/updateSection", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,10 +47,12 @@ public class SectionController {
     @ApiOperation(value = "섹션 리스트 가져오기", notes = "사용자의 섹션 리스트를 불러옵니다.")
     @PostMapping(value = "/user/getSection", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getSection(
-            @ApiParam(value = "아카이브 번호만 기입", required = true)
-            @RequestBody Section section) {
+            @ApiParam(value = "아카이브 번호및 JWT TOKEN", required = true)
+            @RequestBody Section section,
+            @RequestHeader Map<String, String> headers) {
         try {
-            JSONArray result = sectionService.retrieveSectionByArchiveNo(section.getArchive_no());
+            int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            JSONArray result = sectionService.retrieveSectionByArchiveNo(section.getArchive_no(), user_no);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

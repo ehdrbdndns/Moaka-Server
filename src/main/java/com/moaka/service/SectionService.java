@@ -33,7 +33,7 @@ public class SectionService {
 
     public void updateSection(Section params) throws Exception {
         sectionMapper.updateSection(params);
-        tagMapper.deleteTagBySectionNo(params.getNo());
+        tagMapper.deleteSectionTagBySectionNo(params.getNo());
         String today = getToday();
         for(int i = 0; i < params.getTag_list().size(); i++) {
             Tag tag = new Tag();
@@ -46,18 +46,18 @@ public class SectionService {
         }
     }
 
-    public JSONArray retrieveSectionByArchiveNo(int archive_no) throws Exception {
+    public JSONArray retrieveSectionByArchiveNo(int archive_no, int user_no) throws Exception {
         JSONArray result = new JSONArray();
         ArrayList<Section> sectionList = sectionMapper.retrieveSectionByArchiveNo(archive_no);
         for(int i = 0; i < sectionList.size(); i++) {
             JSONObject sectionInfo = new JSONObject();
             Section section = sectionList.get(i);
             ArrayList<String> sectionTagList = tagMapper.retrieveSectionTagBySectionNo(section.getNo());
-            ArrayList<Chunk> chunkList = chunkMapper.retrieveMainChunkBySectionNo(section.getNo());
+            ArrayList<Chunk> chunkList = chunkMapper.retrieveMainChunkBySectionNo(section.getNo(), user_no);
 
             for(int j = 0; j < chunkList.size(); j++) {
                 ArrayList<String> chunkTagList = tagMapper.retrieveChunkTagByChunkNo(chunkList.get(j).getNo());
-                chunkList.get(j).setTagList(chunkTagList);
+                chunkList.get(j).setTag_list(chunkTagList);
             }
 
             // TODO JSON 데이터 생성

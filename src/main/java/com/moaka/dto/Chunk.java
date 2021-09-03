@@ -37,7 +37,15 @@ public class Chunk {
     private String regdate;
 
     // 청크의 댓글 리스트
-    private ArrayList<String> tagList;
+    private ArrayList<String> tag_list;
     private ArrayList<Comment> commentList;
-    private ArrayList<Chunk> chunkList;
+    private ArrayList<Chunk> chunk_list;
+
+    // 청크 북마크
+    private int bookmark_no;
+    private boolean bookmark_loading = false;
+
+    // 청크 좋아요
+    private int like_no;
+    private boolean chunk_loading = false;
 }

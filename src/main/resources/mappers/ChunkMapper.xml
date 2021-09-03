@@ -3,17 +3,22 @@
 
 <mapper namespace="com.moaka.mapper.ChunkMapper">
     <select id="retrieveMainChunkBySectionNo" resultType="Chunk">
-        select *
-        from chunk
-        where section_no = ${section_no}
-          AND layer = 0
+        select ch.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no
+        from chunk AS ch
+                 LEFT JOIN bookmark AS bo ON ch.no = bo.chunk_no AND bo.user_no=${user_no}
+                 LEFT JOIN chunk_like as li ON ch.no = li.chunk_no AND li.user_no = ${user_no}
+        where ch.section_no = ${section_no}
+          AND ch.layer = 0
         ORDER BY no DESC
     </select>
     <insert id="insertChunk">
-        insert into chunk(link, title, thumbnail, section_no, user_no, regdate, description, link_title,
-                          link_description, layer, content_order)
-        values (#{link}, #{title}, #{thumbnail}, ${section_no}, ${user_no}, #{regdate}, #{description}, #{link_title},
-                #{link_description}, 0, 1)
+        insert into chunk(link, link_title, link_description, title, description, thumbnail, section_no, user_no,
+        regdate, layer, content_order)
+        values(#{link}, #{link_title}, #{link_description}, #{title}, #{description}, #{thumbnail}, ${section_no},
+        ${user_no}, #{regdate}, 0, 1)
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
     <update id="updateGroupNumOfChunk">
         update chunk
@@ -35,12 +40,24 @@
         from chunk
         where no = ${no}
     </delete>
-    <select id="isAuthorityOfChunk" resultType="boolean">
+    <select id="isAuthorityOfDeleteChunk" resultType="boolean">
         SELECT EXISTS(SELECT *
                       FROM chunk AS ch
                                JOIN section AS se ON ch.section_no = se.no
                                JOIN archive AS ar ON se.archive_no = ar.no
                       WHERE ch.no = ${no}
                         AND (ch.user_no = ${user_no} OR ar.user_no = ${user_no}));
+    </select>
+    <select id="isAuthorityOfInsertChunk" resultType="boolean">
+        SELECT EXISTS(SELECT *
+                      FROM section AS se
+                               JOIN archive AS ar ON se.archive_no = ar.no
+                      WHERE se.no = ${no}
+                        AND ar.privacy_type = 'public')
+    </select>
+    <select id="isAuthorityOfUpdateChunk" resultType="boolean">
+        SELECT EXISTS(SELECT *
+                      FROM chunk
+                      WHERE user_no = ${no})
     </select>
 </mapper>
