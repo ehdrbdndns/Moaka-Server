@@ -1,0 +1,12 @@
+package com.moaka.mapper;
+
+import com.moaka.dto.Like;
+import org.mapstruct.Mapper;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@Mapper
+public interface LikeMapper {
+    void insertLikeOfChunk(Like like);
+    void deleteLike(int no);
+}

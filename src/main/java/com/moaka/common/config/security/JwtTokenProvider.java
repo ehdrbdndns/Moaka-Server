@@ -25,8 +25,8 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    // 토큰 유효시간 30분
-    private long tokenValidTime = 30 * 60 * 1000L;
+    // 토큰 유효시간 1시간
+    private long tokenValidTime = 60 * 60 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
@@ -65,6 +65,11 @@ public class JwtTokenProvider {
         System.out.println("toeken body");
         System.out.println(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody());
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    // 토큰에서 회원 번호 추출
+    public int getUserNo(String token) {
+        return (int) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("no");
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Bearer" : "TOKEN값'
