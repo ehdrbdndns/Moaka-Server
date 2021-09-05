@@ -10,5 +10,5 @@ import java.util.ArrayList;
 @Repository
 @Mapper
 public interface ArchiveMapper {
-    ArrayList<Archive> retrieveLocalArchiveFromUserNo(int user_no);
+    ArrayList<Archive> retrieveArchiveFromUserNo(int user_no);
 }

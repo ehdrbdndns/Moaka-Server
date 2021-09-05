@@ -1,5 +1,6 @@
 package com.moaka.service;
 
+import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
 import com.moaka.common.jwt.EncryptionService;
@@ -8,14 +9,18 @@ import com.moaka.dto.User;
 import com.moaka.mapper.ArchiveMapper;
 import com.moaka.mapper.AuthMapper;
 import com.moaka.mapper.SectionMapper;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AuthService {
     @Autowired
     AuthMapper authMapper;
@@ -27,6 +32,8 @@ public class AuthService {
     @Autowired
     EncryptionService encryptionService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     public JSONObject login(User params) {
         try{
             JSONObject result = new JSONObject();
@@ -36,7 +43,7 @@ public class AuthService {
             if(userInfo != null) {
                 System.out.println("로그인 성공");
                 isLogin = true;
-                message = encryptionService.encryptionJWT(userInfo);
+                message = jwtTokenProvider.createToken(userInfo.getId(), Collections.singletonList("ROLE_USER"), userInfo.getNo(), userInfo.getName(), userInfo.getProfile());
             } else {
                 System.out.println("로그인 실패");
                 isLogin = false;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moaka.mapper.TagMapper">
+    <insert id="insertSectionTag">
+        insert into tag(tag, section_no, store_type, regdate)
+        values (#{tag}, ${section_no}, 'section', #{regdate})
+    </insert>
+    <insert id="insertChunkTag">
+        insert into tag(tag, chunk_no, store_type, regdate)
+        values (#{tag}, ${chunk_no}, 'chunk', #{regdate})
+    </insert>
+
+    <select id="retrieveSectionTagBySectionNo" resultType="String">
+        select tag
+        from tag
+        where store_type = 'section'
+          AND section_no = ${section_no}
+    </select>
+
+    <select id="retrieveChunkTagByChunkNo" resultType="String">
+        select tag
+        from tag
+        where store_type = 'chunk'
+          AND chunk_no = ${chunk_no}
+    </select>
+
+    <delete id="deleteSectionTagBySectionNo">
+        delete
+        from tag
+        where store_type = 'section'
+          AND section_no = ${section_no}
+    </delete>
+
+    <delete id="deleteChunkTagByChunkNo">
+        delete
+        from tag
+        where store_type = 'chunk'
+          AND chunk_no = ${chunk_no}
+    </delete>
+</mapper>

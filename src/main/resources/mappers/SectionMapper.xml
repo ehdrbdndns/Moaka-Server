@@ -2,7 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.moaka.mapper.SectionMapper">
-    <select id="retrieveSectionFromArchiveNo" resultType="Section">
+    <select id="retrieveSectionByArchiveNo" resultType="Section">
         select * from section where archive_no = ${archive_no}
     </select>
+
+    <insert id="insertSection">
+        insert into section(title, description, archive_no,  regdate) value (#{title}, #{description}, ${archive_no}, #{regdate})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <delete id="deleteSection">
+        delete from section where no=${no}
+    </delete>
+
+    <update id="updateSection">
+        update section
+        SET title = #{title}, description = #{description}
+        WHERE no = ${no}
+    </update>
 </mapper>

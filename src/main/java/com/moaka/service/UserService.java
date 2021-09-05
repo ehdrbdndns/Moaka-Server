@@ -26,11 +26,11 @@ public class UserService {
 
     public JSONArray retrieveDirectory(int user_no) throws Exception {
         JSONArray directoryList = new JSONArray();
-        ArrayList<Archive> archiveList = archiveMapper.retrieveLocalArchiveFromUserNo(user_no);
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveFromUserNo(user_no);
         for(int i = 0; i < archiveList.size(); i++) {
             JSONObject directoryInfo = new JSONObject();
             Archive archive = archiveList.get(i);
-            ArrayList<Section> sectionList = sectionMapper.retrieveSectionFromArchiveNo(archive.getNo());
+            ArrayList<Section> sectionList = sectionMapper.retrieveSectionByArchiveNo(archive.getNo());
 
             if (sectionList.size() != 0) {
                 directoryInfo.put("archive_no", archive.getNo());
