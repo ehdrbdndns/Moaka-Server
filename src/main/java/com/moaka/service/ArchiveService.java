@@ -29,4 +29,13 @@ public class ArchiveService {
 
         return result;
     }
+
+    public JSONObject retrieveArchiveFromArchiveNo(int archive_no) {
+        JSONObject result = new JSONObject();
+        Archive archive = archiveMapper.retrieveArchiveFromArchiveNo(archive_no);
+        ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archive.getNo());
+        archive.setTag_list(tagList);
+        result.put("archive", archive);
+        return result;
+    }
 }

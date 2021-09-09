@@ -14,4 +14,9 @@
         from archive
         where user_no = ${user_no}
     </select>
+    <select id="retrieveArchiveFromArchiveNo" resultType="Archive">
+        select *
+        from archive
+        where no=${archive_no}
+    </select>
 </mapper>
