@@ -19,6 +19,6 @@
         from archive AS ar
             LEFT JOIN bookmark AS bo ON bo.store_type='archive' AND ar.no = bo.archive_no AND bo.user_no=${user_no}
             LEFT JOIN archive_like AS li On ar.no = li.archive_no AND li.user_no=${user_no}
-        where ar.no=${archive_no}
+        where no=${archive_no}
     </select>
 </mapper>

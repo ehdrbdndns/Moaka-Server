@@ -18,7 +18,9 @@ public class Archive {
     // 생성자 고유번호
     private int user_no;
     private String regdate;
-    
+
+    private int bookmark_no;
+    private int like_no;
     ArrayList<Section> section_list;
     ArrayList<String> tag_list;
 }

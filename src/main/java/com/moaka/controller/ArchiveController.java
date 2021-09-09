@@ -44,12 +44,14 @@ public class ArchiveController {
     }
 
     @ApiOperation(value = "아카이브의 디테일 페이지", notes = "해당 아카이브 정보를 가져옵니다.")
-    @PostMapping(value = "/archive/detail", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/retrieveArchiveFromArchiveNo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> retrieveArchiveFromArchiveNo(
             @ApiParam(value = "아카이브 번호", required = true)
-            @RequestParam("archive_no") int archive_no) {
+            @RequestParam("archive_no") int archive_no,
+            @RequestHeader Map<String, String> headers) {
         try {
-            JSONObject result = archiveService.retrieveArchiveFromArchiveNo(archive_no);
+            int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            JSONObject result = archiveService.retrieveArchiveFromArchiveNo(archive_no, user_no);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
