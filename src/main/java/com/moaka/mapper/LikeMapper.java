@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface LikeMapper {
     void insertLikeOfArchive(Like like);
     void insertLikeOfChunk(Like like);
-    void deleteLike(int no);
+    void deleteArchiveLike(int no);
+    void deleteChunkLike(int no);
 }

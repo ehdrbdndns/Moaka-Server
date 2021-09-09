@@ -31,11 +31,25 @@ public class ArchiveService {
     }
 
     public JSONObject retrieveArchiveFromArchiveNo(int archive_no, int user_no) {
+        JSONObject archiveObj = new JSONObject();
         JSONObject result = new JSONObject();
         Archive archive = archiveMapper.retrieveArchiveFromArchiveNo(archive_no, user_no);
         ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archive.getNo());
         archive.setTag_list(tagList);
-        result.put("archive", archive);
+
+        archiveObj.put("no", archive.getNo());
+        archiveObj.put("user_no", archive.getUser_no());
+        archiveObj.put("title", archive.getTitle());
+        archiveObj.put("description", archive.getDescription());
+        archiveObj.put("thumbnail", archive.getThumbnail());
+        archiveObj.put("creator_name", archive.getCreator_name());
+        archiveObj.put("privacy_type", archive.getPrivacy_type());
+        archiveObj.put("regdate", archive.getRegdate());
+        archiveObj.put("tag_list", archive.getTag_list());
+        archiveObj.put("bookmark_no", archive.getBookmark_no());
+        archiveObj.put("like_no", archive.getLike_no());
+
+        result.put("archive", archiveObj);
         return result;
     }
 }

@@ -15,10 +15,11 @@
         where user_no = ${user_no}
     </select>
     <select id="retrieveArchiveFromArchiveNo" resultType="Archive">
-        select ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no
+        select ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no, us.name AS creator_name
         from archive AS ar
             LEFT JOIN bookmark AS bo ON bo.store_type='archive' AND ar.no = bo.archive_no AND bo.user_no=${user_no}
             LEFT JOIN archive_like AS li On ar.no = li.archive_no AND li.user_no=${user_no}
+            LEFT JOIN user AS us ON ar.user_no = us.no
         where ar.no=${archive_no}
     </select>
 </mapper>

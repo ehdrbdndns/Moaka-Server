@@ -63,11 +63,17 @@ public class LikeController {
 
     @ApiOperation(value = "좋아요 삭제", notes = "좋아요 삭제")
     @PostMapping(value = "/user/deleteLike", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteBookmark(@ApiParam(value = "like 고유번호 필요", required = true)
+    public ResponseEntity<String> deleteLike(@ApiParam(value = "like 고유번호 필요", required = true)
                                               @RequestBody Like params) {
         try {
             JSONObject result = new JSONObject();
-            likeService.deleteLike(params.getNo());
+            if(params.getType().equals("archive")) {
+                // 아카이브 좋아요
+                likeService.deleteArchiveLike(params.getNo());
+            } else {
+                // 청크 좋아요
+                likeService.deleteChunkLike(params.getNo());
+            }
             result.put("isSuccess", true);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {

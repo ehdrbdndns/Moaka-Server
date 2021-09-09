@@ -16,7 +16,12 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
-    <delete id="deleteLike">
+    <delete id="deleteArchiveLike">
+        DELETE
+        FROM archive_like
+        WHERE no = ${no}
+    </delete>
+    <delete id="deleteChunkLike">
         DELETE
         FROM chunk_like
         WHERE no = ${no}

@@ -18,5 +18,6 @@ public class Like {
     @ApiParam(value = "생성 날짜", required = false)
     private String regdate;
 
-
+    @ApiParam(value = "좋아요 종류", required = false)
+    private String type;
 }
