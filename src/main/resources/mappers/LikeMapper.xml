@@ -9,6 +9,13 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
+    <insert id="insertLikeOfArchive">
+        INSERT INTO archive_like(user_no, archive_no, regdate)
+        VALUES (${user_no}, ${archive_no}, #{regdate})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
     <delete id="deleteLike">
         DELETE
         FROM chunk_like

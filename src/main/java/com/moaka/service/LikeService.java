@@ -23,6 +23,12 @@ public class LikeService {
         return params.getNo();
     }
 
+    public int insertLikeOfArchive(Like params) {
+        params.setRegdate(getToday());
+        likeMapper.insertLikeOfArchive(params);
+        return params.getNo();
+    }
+
     public void deleteLike(int no) {
         likeMapper.deleteLike(no);
     }
