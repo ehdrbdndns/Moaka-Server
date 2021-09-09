@@ -10,5 +10,6 @@ import java.util.ArrayList;
 @Repository
 @Mapper
 public interface ArchiveMapper {
+    ArrayList<Archive> retrieveArchiveFromGroup(int user_no);
     ArrayList<Archive> retrieveArchiveFromUserNo(int user_no);
 }
