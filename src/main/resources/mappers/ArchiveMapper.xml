@@ -22,4 +22,10 @@
             LEFT JOIN user AS us ON ar.user_no = us.no
         where ar.no=${archive_no}
     </select>
+    <select id="isAuthorityOfDeleteArchive" resultType="boolean">
+        SELECT EXISTS (select * from archive where no=${archive_no} AND user_no=${user_no})
+    </select>
+    <delete id="deleteArchiveFromArchiveNo">
+        delete from archive where no=${archive_no}
+    </delete>
 </mapper>

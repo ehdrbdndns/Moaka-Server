@@ -14,4 +14,6 @@ public interface ArchiveMapper {
     ArrayList<Archive> retrieveArchiveFromGroup(int user_no);
     ArrayList<Archive> retrieveArchiveFromUserNo(int user_no);
     Archive retrieveArchiveFromArchiveNo(@Param("archive_no") int archive_no, @Param("user_no") int user_no);
+    boolean isAuthorityOfDeleteArchive(@Param("archive_no") int archive_no, @Param("user_no") int user_no);
+    void deleteArchiveFromArchiveNo(@Param("archive_no") int archive_no);
 }

@@ -58,4 +58,20 @@ public class ArchiveController {
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
     }
+
+    @ApiOperation(value = "아카이브 삭제", notes = "아카이브 고유 번호와 JWT 토큰으로 아카이브를 삭제합니다.")
+    @PostMapping(value = "/user/deleteArchiveFromArchiveNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteArchiveFromArchiveNo(
+            @ApiParam(value = "아카이브 번호", required = true)
+            @RequestParam("archive_no") int archive_no,
+            @RequestHeader Map<String, String> headers) {
+        try {
+            int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            JSONObject result = archiveService.deleteArchiveFromArchiveNo(archive_no, user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
 }

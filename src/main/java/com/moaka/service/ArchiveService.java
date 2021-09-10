@@ -52,4 +52,17 @@ public class ArchiveService {
         result.put("archive", archiveObj);
         return result;
     }
+
+    public JSONObject deleteArchiveFromArchiveNo(int archive_no, int user_no) {
+        JSONObject result = new JSONObject();
+        if(archiveMapper.isAuthorityOfDeleteArchive(archive_no, user_no)) {
+            // 아카이브를 삭제할 권한이 있음
+            archiveMapper.deleteArchiveFromArchiveNo(archive_no);
+            result.put("isSuccess", true);
+        } else {
+            // 아카이브를 삭제할 권한이 없음
+            result.put("isSuccess", false);
+        }
+        return result;
+    }
 }
