@@ -1,5 +1,6 @@
 package com.moaka.controller;
 
+import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
 import com.moaka.common.jwt.EncryptionService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 
 @RestController
 public class AuthController {
@@ -24,6 +26,8 @@ public class AuthController {
     AuthService authService;
     @Autowired
     EncryptionService encryptionService;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @ApiOperation(value = "로그인", notes = "구글 사용자는 sub, 로컬 사용자는 ID와 PWD로 로그인을 합니다.")
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -80,6 +84,18 @@ public class AuthController {
 
             JSONObject result = authService.register(params);
 
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "JWT 토큰으로 사용자 정보 가져오기", notes = "JWT 토큰으로 사용자 정보 가져오기")
+    @PostMapping(value = "/user/setUserFromToken", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> setUser(@RequestHeader Map<String, String> headers) {
+        try{
+            JSONObject result = jwtTokenProvider.setUser(headers.get("bearer"));
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         }catch (Exception e) {
             e.printStackTrace();

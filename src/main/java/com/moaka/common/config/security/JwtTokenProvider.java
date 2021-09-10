@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -70,6 +71,15 @@ public class JwtTokenProvider {
     // 토큰에서 회원 번호 추출
     public int getUserNo(String token) {
         return (int) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("no");
+    }
+
+    public JSONObject setUser(String token) {
+        JSONObject result = new JSONObject();
+        result.put("no", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("no"));
+        result.put("id", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("id"));
+        result.put("name", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("name"));
+        result.put("profile", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("profile"));
+        return result;
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Bearer" : "TOKEN값'
