@@ -26,11 +26,11 @@ import java.util.Calendar;
 
 @Service
 public class CdnService {
-    @Value("${aws.accessKey}")
+    @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
-    @Value("${aws.secretKey}")
+    @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
-    @Value("${aws.bucketName}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
     private AmazonS3 s3Client;

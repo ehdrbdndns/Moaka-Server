@@ -1,0 +1,31 @@
+# DB
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://moaka-db.ctldqhksk1xl.ap-northeast-2.rds.amazonaws.com:3306/moaka?characterEncoding=UTF-8&serverTimezone=UTC
+    username: moaka
+    password: moaka1234
+
+---
+#mybatis
+mybatis:
+  type-aliases-package: com.moaka.dto
+  mapper-locations: classpath:mappers/*.xml
+
+---
+#jwt
+jwt:
+  secret: moaka
+
+---
+#aws
+cloud:
+  aws:
+    s3:
+      bucket: moaka-s3
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instanceProfile: true
