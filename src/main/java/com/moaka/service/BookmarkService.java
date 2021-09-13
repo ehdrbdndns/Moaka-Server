@@ -32,6 +32,12 @@ public class BookmarkService {
         bookmarkMapper.deleteBookmark(params.getNo());
     }
 
+    public int insertBookmarkOfArchive(Bookmark params) {
+        params.setRegdate(getToday());
+        bookmarkMapper.insertBookmarkOfArchive(params);
+        return params.getNo();
+    }
+
     public String getToday() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

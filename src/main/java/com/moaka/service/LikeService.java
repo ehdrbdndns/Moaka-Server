@@ -23,8 +23,18 @@ public class LikeService {
         return params.getNo();
     }
 
-    public void deleteLike(int no) {
-        likeMapper.deleteLike(no);
+    public int insertLikeOfArchive(Like params) {
+        params.setRegdate(getToday());
+        likeMapper.insertLikeOfArchive(params);
+        return params.getNo();
+    }
+
+    public void deleteArchiveLike(int no) {
+        likeMapper.deleteArchiveLike(no);
+    }
+
+    public void deleteChunkLike(int no) {
+        likeMapper.deleteChunkLike(no);
     }
 
     public String getToday() {

@@ -24,7 +24,7 @@ public class BookmarkController {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    @ApiOperation(value = "링크 북마크 생성", notes = "링크 북마크 생성")
+    @ApiOperation(value = "청크 북마크 생성", notes = "청크 북마크 생성")
     @PostMapping(value = "/user/insertBookmarkOfChunk", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> insertBookmarkOfChunk(@ApiParam(value = "bookmark의 chunk_no가 필요", required = true)
                                               @RequestBody Bookmark params,
@@ -33,6 +33,22 @@ public class BookmarkController {
             params.setUser_no(jwtTokenProvider.getUserNo(headers.get("bearer")));
             JSONObject result = new JSONObject();
             result.put("bookmark_no", bookmarkService.insertBookmarkOfChunk(params));
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "아카이브 북마크 생성", notes = "아카이브 북마크 생성")
+    @PostMapping(value = "/user/insertBookmarkOfArchive", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> insertBookmarkOfArchive(@ApiParam(value = "bookmark의 archive_no가 필요", required = true)
+                                                        @RequestBody Bookmark params,
+                                                        @RequestHeader Map<String, String> headers) {
+        try {
+            params.setUser_no(jwtTokenProvider.getUserNo(headers.get("bearer")));
+            JSONObject result = new JSONObject();
+            result.put("bookmark_no", bookmarkService.insertBookmarkOfArchive(params));
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

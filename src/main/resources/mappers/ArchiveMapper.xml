@@ -2,6 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.moaka.mapper.ArchiveMapper">
+    <insert id="insertArchive">
+        INSERT INTO archive(title, privacy_type, user_no, regdate, description, thumbnail)
+        VALUES(#{title}, #{privacy_type}, ${user_no}, #{regdate}, #{description}, #{thumbnail})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <insert id="insertArchiveGroupFromArchive">
+        INSERT INTO archive_group(user_no, archive_no, regdate)
+        VALUES(${user_no}, ${archive_no}, #{regdate})
+    </insert>
     <select id="retrieveArchiveFromGroup" resultType="Archive">
         SELECT ar.*, us.name AS creator_name
         FROM archive_group AS ar_gr
@@ -14,4 +25,18 @@
         from archive
         where user_no = ${user_no}
     </select>
+    <select id="retrieveArchiveFromArchiveNo" resultType="Archive">
+        select ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no, us.name AS creator_name
+        from archive AS ar
+            LEFT JOIN bookmark AS bo ON bo.store_type='archive' AND ar.no = bo.archive_no AND bo.user_no=${user_no}
+            LEFT JOIN archive_like AS li On ar.no = li.archive_no AND li.user_no=${user_no}
+            LEFT JOIN user AS us ON ar.user_no = us.no
+        where ar.no=${archive_no}
+    </select>
+    <select id="isAuthorityOfDeleteArchive" resultType="boolean">
+        SELECT EXISTS (select * from archive where no=${archive_no} AND user_no=${user_no})
+    </select>
+    <delete id="deleteArchiveFromArchiveNo">
+        delete from archive where no=${archive_no}
+    </delete>
 </mapper>

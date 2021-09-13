@@ -39,4 +39,17 @@ public class UserController {
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
     }
+
+    @ApiOperation(value = "이메일로 사용자 찾기", notes = "이메일로 사용자 찾기")
+    @PostMapping(value = "/retrieveUserListById", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveUserListById(@ApiParam(value = "id", required = true, example = "test@naver.com")
+                                                         @RequestParam(value = "id") String id) {
+        try{
+            JSONObject result = userService.retrieveUserListById(id);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
 }

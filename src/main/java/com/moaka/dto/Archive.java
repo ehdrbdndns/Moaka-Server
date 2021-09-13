@@ -2,6 +2,7 @@ package com.moaka.dto;
 
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 
@@ -12,13 +13,18 @@ public class Archive {
     private String title;
     private String description;
     private String thumbnail;
+    private MultipartFile thumbnailFile;
     private String privacy_type;
     // 생성자 이름
     private String creator_name;
     // 생성자 고유번호
     private int user_no;
     private String regdate;
-    
+
+    private int bookmark_no;
+    private int like_no;
+    ArrayList<User> user_list;
     ArrayList<Section> section_list;
     ArrayList<String> tag_list;
+    ArrayList<Integer> group_no_list;
 }
