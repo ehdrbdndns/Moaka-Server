@@ -1,5 +1,8 @@
 package com.moaka.service;
 
+import com.moaka.common.cdn.CdnService;
+import com.moaka.common.exception.ErrorCode;
+import com.moaka.common.exception.InternalServiceException;
 import com.moaka.dto.Archive;
 import com.moaka.mapper.ArchiveMapper;
 import com.moaka.mapper.TagMapper;
@@ -8,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 @Service
 @Transactional
@@ -17,6 +23,26 @@ public class ArchiveService {
     ArchiveMapper archiveMapper;
     @Autowired
     TagMapper tagMapper;
+    @Autowired
+    CdnService cdnService;
+
+    public void insertArchive(Archive params) {
+        String today = getToday();
+
+        // CDN 썸네일 생성
+        String thumbnailUrl = cdnService.FileUpload("archive/thumbnail", params.getThumbnailFile());
+        params.setRegdate(today);
+        params.setThumbnail(thumbnailUrl);
+
+        // DB 아카이브 정보 생성
+        archiveMapper.insertArchive(params);
+
+        // DB 아카이브 그룹 생성
+        archiveMapper.insertArchiveGroupFromArchive(params.getUser_no(), params.getNo(), today);
+        for(int i = 0; i < params.getGroup_no_list().size(); i++) {
+            archiveMapper.insertArchiveGroupFromArchive(params.getGroup_no_list().get(i), params.getNo(), today);
+        }
+    }
 
     public JSONObject retrieveArchiveFromGroup(int user_no) {
         JSONObject result = new JSONObject();
@@ -64,5 +90,11 @@ public class ArchiveService {
             result.put("isSuccess", false);
         }
         return result;
+    }
+
+    public String getToday(){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(cal.getTime());
     }
 }

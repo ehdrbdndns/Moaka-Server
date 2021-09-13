@@ -3,7 +3,9 @@ package com.moaka.service;
 import com.moaka.dto.Archive;
 import com.moaka.dto.Chunk;
 import com.moaka.dto.Section;
+import com.moaka.dto.User;
 import com.moaka.mapper.ArchiveMapper;
+import com.moaka.mapper.AuthMapper;
 import com.moaka.mapper.BookmarkMapper;
 import com.moaka.mapper.SectionMapper;
 import org.json.JSONArray;
@@ -23,6 +25,8 @@ public class UserService {
     ArchiveMapper archiveMapper;
     @Autowired
     SectionMapper sectionMapper;
+    @Autowired
+    AuthMapper authMapper;
 
     public JSONArray retrieveDirectory(int user_no) throws Exception {
         JSONArray directoryList = new JSONArray();
@@ -47,5 +51,31 @@ public class UserService {
             }
         }
         return directoryList;
+    }
+
+    public JSONObject retrieveUserListById(String id) {
+        JSONObject result = new JSONObject();
+
+        ArrayList<User> userList = authMapper.retrieveUserListById(id);
+        if(userList.size() != 0) {
+            // 아이디를 찾음
+            JSONArray userInfoList = new JSONArray();
+            for(int i = 0; i < userList.size(); i++) {
+                JSONObject userInfo = new JSONObject();
+                userInfo.put("no", userList.get(i).getNo());
+                userInfo.put("id", userList.get(i).getId());
+                userInfo.put("name", userList.get(i).getName());
+                userInfo.put("profile", userList.get(i).getProfile());
+                userInfoList.put(userInfo);
+            }
+
+            result.put("user_list", userInfoList);
+            result.put("isSuccess", true);
+        } else {
+            // 아이디를 찾지 못함
+            result.put("isSuccess", false);
+        }
+
+        return result;
     }
 }
