@@ -68,6 +68,9 @@ public class AuthController {
                                                @RequestParam(value = "auth_type", required = true) String auth_type) {
         try{
             User params = new User();
+            if(sub.equals("")) {
+                sub = "local_" + id;
+            }
             params.setSub(sub);
             params.setId(id);
             if(pwd.equals("")) {
