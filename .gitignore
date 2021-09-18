@@ -42,3 +42,4 @@ out/
 ## yml
 application.yml
 aws.yml
+src/main/resources/application.yml
