@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 
 @Service
@@ -68,9 +70,28 @@ public class AuthService {
         } else {
             System.out.println("기존 유저가 아닙니다.");
             authMapper.register(params);
+            String today = getToday();
+
+            Archive archiveInfo = new Archive();
+            archiveInfo.setThumbnail("https://moaka-s3.s3.ap-northeast-2.amazonaws.com/logo/moaka_logo.png");
+            archiveInfo.setUser_no(params.getNo());
+            archiveInfo.setTitle("개인 저장소");
+            archiveInfo.setDescription("개인적으로 사용할 수 있는 아카이브입니다.");
+            archiveInfo.setPrivacy_type("private");
+            archiveInfo.setRegdate(today);
+
+            archiveMapper.insertArchive(archiveInfo);
+            archiveMapper.insertArchiveGroupFromArchive(archiveInfo.getUser_no(), archiveInfo.getNo(), today);
+
             result.put("no", params.getNo());
             result.put("isSuccess", true);
         }
         return result;
+    }
+
+    public String getToday(){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(cal.getTime());
     }
 }
