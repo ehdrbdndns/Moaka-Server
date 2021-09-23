@@ -24,13 +24,13 @@ public class ChunkService {
 
     public JSONObject insertChunk(Chunk chunk) throws Exception {
         JSONObject result = new JSONObject();
-        chunk.setRegdate(getToday());
         // TODO archive가 공개인지 체크
-        if(chunkMapper.isAuthorityOfInsertChunk(chunk.getSection_no())) {
+        if (chunkMapper.isAuthorityOfInsertChunk(chunk.getSection_no(), chunk.getUser_no())) {
+            chunk.setRegdate(getToday());
             chunkMapper.insertChunk(chunk);
             chunkMapper.updateGroupNumOfChunk(chunk.getNo());
 
-            for(int i = 0; i < chunk.getTag_list().size(); i++) {
+            for (int i = 0; i < chunk.getTag_list().size(); i++) {
                 Tag tag = new Tag();
                 tag.setChunk_no(chunk.getNo());
                 tag.setTag(chunk.getTag_list().get(i));
@@ -47,11 +47,32 @@ public class ChunkService {
         return result;
     }
 
+    public JSONObject insertRelativeChunk(Chunk params) throws Exception {
+        JSONObject result = new JSONObject();
+        if (chunkMapper.isAuthorityOfInsertChunk(params.getSection_no(), params.getUser_no())) {
+            params.setRegdate(getToday());
+
+            // content_order 구하기
+            int content_order = chunkMapper.selectRelativeChunkNumber(params.getGroup_num()) + 1;
+            params.setContent_order(content_order);
+
+            chunkMapper.insertRelativeChunk(params);
+
+            result.put("isSuccess", true);
+            result.put("no", params.getNo());
+            result.put("regdate", params.getRegdate());
+        } else {
+            result.put("isSuccess", false);
+        }
+
+        return result;
+    }
+
     public boolean updateChunk(Chunk params) throws Exception {
-        if(chunkMapper.isAuthorityOfUpdateChunk(params.getUser_no())) {
+        if (chunkMapper.isAuthorityOfUpdateChunk(params.getUser_no())) {
             chunkMapper.updateChunk(params);
             tagMapper.deleteChunkTagByChunkNo(params.getNo());
-            for(int i = 0; i < params.getTag_list().size(); i++) {
+            for (int i = 0; i < params.getTag_list().size(); i++) {
                 Tag tag = new Tag();
                 tag.setChunk_no(params.getNo());
                 tag.setTag(params.getTag_list().get(i));
@@ -65,7 +86,7 @@ public class ChunkService {
     }
 
     public boolean deleteChunk(Chunk params) throws Exception {
-        if(chunkMapper.isAuthorityOfDeleteChunk(params)) {
+        if (chunkMapper.isAuthorityOfDeleteChunk(params)) {
             chunkMapper.deleteChunk(params);
             return true;
         } else {

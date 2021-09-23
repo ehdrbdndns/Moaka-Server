@@ -36,6 +36,10 @@ public class Chunk {
     @ApiParam(value = "생성 날짜", required = false)
     private String regdate;
 
+    // 청크의 관련 청크 리스트
+    private ArrayList<Chunk> relative_chunk_list;
+    private boolean relative_chunk_loading = false;
+
     // 청크의 댓글 리스트
     private ArrayList<String> tag_list;
     private ArrayList<Comment> commentList;

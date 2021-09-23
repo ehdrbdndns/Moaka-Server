@@ -71,7 +71,7 @@
         SELECT EXISTS(SELECT *
                       FROM section AS se
                                JOIN archive AS ar ON se.archive_no = ar.no
-                      WHERE se.no = ${section_no} AND (ar.privacy_type = 'public' OR ar.user_no = ${user_no}))
+                      WHERE se.no = ${section_no} AND (ar.privacy_type = 'public' OR ar.user_no = ${user_no})
     </select>
     <select id="isAuthorityOfUpdateChunk" resultType="boolean">
         SELECT EXISTS(SELECT *
