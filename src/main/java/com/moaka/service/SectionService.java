@@ -52,12 +52,19 @@ public class SectionService {
         for(int i = 0; i < sectionList.size(); i++) {
             JSONObject sectionInfo = new JSONObject();
             Section section = sectionList.get(i);
+            // TODO 섹션 태그 추출
             ArrayList<String> sectionTagList = tagMapper.retrieveSectionTagBySectionNo(section.getNo());
+            // TODO 섹션의 청크 리스트 추출
             ArrayList<Chunk> chunkList = chunkMapper.retrieveMainChunkBySectionNo(section.getNo(), user_no);
 
             for(int j = 0; j < chunkList.size(); j++) {
+                // TODO 청크의 태그 리스트
                 ArrayList<String> chunkTagList = tagMapper.retrieveChunkTagByChunkNo(chunkList.get(j).getNo());
                 chunkList.get(j).setTag_list(chunkTagList);
+
+                // TODO 청크의 관련 청크
+                ArrayList<Chunk> relativeChunkList = chunkMapper.retrieveRelativeChunkByGroupNum(chunkList.get(j).getNo());
+                chunkList.get(j).setRelative_chunk_list(relativeChunkList);
             }
 
             // TODO JSON 데이터 생성
