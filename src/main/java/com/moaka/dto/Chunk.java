@@ -41,9 +41,11 @@ public class Chunk {
     private boolean relative_chunk_loading = false;
 
     // 청크의 댓글 리스트
+    private ArrayList<Comment> comment_list;
+    private boolean comment_loading = false;
+
+    // 청크의 태그 리스트
     private ArrayList<String> tag_list;
-    private ArrayList<Comment> commentList;
-    private ArrayList<Chunk> chunk_list;
 
     // 청크 북마크
     private int bookmark_no;
@@ -52,4 +54,6 @@ public class Chunk {
     // 청크 좋아요
     private int like_no;
     private boolean chunk_loading = false;
+
+    private ArrayList<Chunk> chunk_list;
 }

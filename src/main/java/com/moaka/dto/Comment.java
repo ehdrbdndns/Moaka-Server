@@ -23,4 +23,10 @@ public class Comment {
     private int group_num;
     @ApiParam(value = "생성 날짜", required = false)
     private String regdate;
+
+    // 댓글 단 유저 프로필
+    private String profile;
+    // 댓글 단 유저 이름
+    private String name;
+
 }

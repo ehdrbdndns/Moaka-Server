@@ -76,6 +76,6 @@
     <select id="isAuthorityOfUpdateChunk" resultType="boolean">
         SELECT EXISTS(SELECT *
                       FROM chunk
-                      WHERE user_no = ${no})
+                      WHERE user_no = ${user_no} AND no = ${no})
     </select>
 </mapper>

@@ -1,12 +1,10 @@
 package com.moaka.service;
 
 import com.moaka.dto.Chunk;
+import com.moaka.dto.Comment;
 import com.moaka.dto.Section;
 import com.moaka.dto.Tag;
-import com.moaka.mapper.BookmarkMapper;
-import com.moaka.mapper.ChunkMapper;
-import com.moaka.mapper.SectionMapper;
-import com.moaka.mapper.TagMapper;
+import com.moaka.mapper.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,9 @@ public class SectionService {
 
     @Autowired
     ChunkMapper chunkMapper;
+
+    @Autowired
+    CommentMapper commentMapper;
 
     public void updateSection(Section params) throws Exception {
         sectionMapper.updateSection(params);
@@ -65,6 +66,10 @@ public class SectionService {
                 // TODO 청크의 관련 청크
                 ArrayList<Chunk> relativeChunkList = chunkMapper.retrieveRelativeChunkByGroupNum(chunkList.get(j).getNo());
                 chunkList.get(j).setRelative_chunk_list(relativeChunkList);
+
+                // TODO 청크의 댓글
+                ArrayList<Comment> commentList = commentMapper.selectCommentOfChunk(chunkList.get(j).getNo());
+                chunkList.get(j).setComment_list(commentList);
             }
 
             // TODO JSON 데이터 생성

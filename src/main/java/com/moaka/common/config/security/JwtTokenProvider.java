@@ -73,6 +73,16 @@ public class JwtTokenProvider {
         return (int) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("no");
     }
 
+    // 토큰에서 회원 이름 추출
+    public String getUserName(String token) {
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("name");
+    }
+
+    // 토큰에서 회원 프로필 이미지(CDN URL) 추출
+    public String getUserProfile(String token) {
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("profile");
+    }
+
     public JSONObject setUser(String token) {
         JSONObject result = new JSONObject();
         result.put("no", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("no"));
