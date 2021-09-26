@@ -78,10 +78,10 @@ public class ArchiveController {
     }
 
     @ApiOperation(value = "아카이브 생성", notes = "아카이브를 생성합니다.")
-    @PostMapping(value = "/user/insertArchive", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    @PostMapping(value = "/user/insertArchive", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> insertArchive(
             @RequestPart(value = "thumbnailFile") MultipartFile thumbnailFile,
-            @RequestPart(value="archive") Archive params,
+            @RequestPart(value = "archive") Archive params,
             @RequestHeader Map<String, String> headers) {
         try {
             params.setThumbnailFile(thumbnailFile);
@@ -89,6 +89,21 @@ public class ArchiveController {
             params.setUser_no(user_no);
             archiveService.insertArchive(params);
             JSONObject result = archiveService.retrieveArchiveFromArchiveNo(params.getNo(), user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "아키이브 검색", notes = "아카이브를 검색합니다.")
+    @PostMapping(value = "/retrieveArchiveBySearch", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveBySearch(@ApiParam(value = "검색 내용 내용", required = true)
+                                                          @RequestPart(value = "p") String param,
+                                                          @RequestHeader Map<String, String> headers) {
+        try {
+            int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            JSONObject result = archiveService.retrieveArchiveBySearch(param, user_no);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
