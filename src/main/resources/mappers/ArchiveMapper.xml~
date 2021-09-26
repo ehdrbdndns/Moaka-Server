@@ -43,11 +43,8 @@
         where no =${archive_no}
     </delete>
     <select id="retrieveArchiveBySearch" resultType="Archive">
-        SELECT ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no
+        SELECT *
         FROM archive AS ar
-                 LEFT JOIN bookmark AS bo
-                           ON bo.store_type = 'archive' AND ar.no = bo.archive_no AND bo.user_no = ${user_no}
-                 LEFT JOIN archive_like AS li On ar.no = li.archive_no AND li.user_no = ${user_no}
         WHERE ar.privacy_type = 'public'
           AND (ar.title LIKE #{param} OR ar.description LIKE #{param} OR
                (SELECT EXISTS(SELECT * FROM tag AS ta WHERE ta.archive_no = ar.no AND ta.tag LIKE #{param})));
