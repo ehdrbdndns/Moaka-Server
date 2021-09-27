@@ -19,11 +19,14 @@
         ORDER BY content_order ASC
     </select>
     <select id="retrieveChunkOfBookmarkByUserNo" resultType="Chunk">
-        select ch.*
+        select ch.*, bo.no AS bookmark_no, IF(li.no, li.no, 0) AS like_no
         from chunk AS ch
                  LEFT JOIN bookmark AS bo ON bo.chunk_no = ch.no
-        where bo.store_type = 'bookmark'
+                 LEFT JOIN chunk_like as li ON ch.no = li.chunk_no AND li.user_no = ${user_no}
+        where ch.layer = 0
+          AND bo.store_type = 'chunk'
           AND bo.user_no = ${user_no}
+        ORDER BY bo.no DESC;
     </select>
     <insert id="insertChunk">
         insert into chunk(link, link_title, link_description, title, description, thumbnail, section_no, user_no,
