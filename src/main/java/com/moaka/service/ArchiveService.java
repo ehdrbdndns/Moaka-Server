@@ -40,9 +40,9 @@ public class ArchiveService {
         archiveMapper.insertArchive(params);
 
         // DB 아카이브 그룹 생성
-        archiveMapper.insertArchiveGroupFromArchive(params.getUser_no(), params.getNo(), today);
+        archiveMapper.insertArchiveOfGroup(params.getUser_no(), params.getNo(), today);
         for (int i = 0; i < params.getGroup_no_list().size(); i++) {
-            archiveMapper.insertArchiveGroupFromArchive(params.getGroup_no_list().get(i), params.getNo(), today);
+            archiveMapper.insertArchiveOfGroup(params.getGroup_no_list().get(i), params.getNo(), today);
         }
 
         // DB 아카이브 태그 생성
@@ -56,10 +56,34 @@ public class ArchiveService {
         }
     }
 
-    public JSONObject retrieveArchiveFromGroup(int user_no) {
+    public JSONObject retrieveArchiveOfGroupByUserNo(int user_no) {
         JSONObject result = new JSONObject();
-        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveFromGroup(user_no);
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfGroupByUserNo(user_no);
         for (int i = 0; i < archiveList.size(); i++) {
+            ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
+            archiveList.get(i).setTag_list(tagList);
+        }
+        result.put("archive_list", archiveList);
+
+        return result;
+    }
+
+    public JSONObject retrieveArchiveOfBookmarkByUserNo(int user_no) {
+        JSONObject result = new JSONObject();
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfBookmarkByUserNo(user_no);
+        for (int i = 0; i < archiveList.size(); i++) {
+            ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
+            archiveList.get(i).setTag_list(tagList);
+        }
+        result.put("archive_list", archiveList);
+
+        return result;
+    }
+
+    public JSONObject retrieveArchiveOfTop() {
+        JSONObject result = new JSONObject();
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfTop();
+        for(int i = 0; i < archiveList.size(); i++) {
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
             archiveList.get(i).setTag_list(tagList);
         }
@@ -106,29 +130,13 @@ public class ArchiveService {
 
     public JSONObject retrieveArchiveBySearch(String param, int user_no) {
         JSONObject result = new JSONObject();
-        JSONArray jsonArchiveList = new JSONArray();
         ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveBySearch(param, user_no);
         for(int i = 0; i < archiveList.size(); i++) {
-            JSONObject archive = new JSONObject();
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
-
-            archive.put("no", archiveList.get(i).getNo());
-            archive.put("title", archiveList.get(i).getTitle());
-            archive.put("privacy_type", archiveList.get(i).getPrivacy_type());
-            archive.put("user_no", archiveList.get(i).getUser_no());
-            archive.put("regdate", archiveList.get(i).getRegdate());
-            archive.put("description", archiveList.get(i).getDescription());
-            archive.put("thumbnail", archiveList.get(i).getThumbnail());
-            archive.put("bookmark_no", archiveList.get(i).getBookmark_no());
-            archive.put("bookmark_loading", false);
-            archive.put("like_no", archiveList.get(i).getLike_no());
-            archive.put("like_loading", false);
-            archive.put("tag_list", tagList);
-
-            jsonArchiveList.put(archive);
+            archiveList.get(i).setTag_list(tagList);
         }
         result.put("isSuccess", true);
-        result.put("archive_list", jsonArchiveList);
+        result.put("archive_list", archiveList);
 
         return result;
     }

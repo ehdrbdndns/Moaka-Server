@@ -68,6 +68,11 @@ public class ChunkService {
         return result;
     }
 
+    public JSONObject retrieveChunkOfBookmarkByUserNo(int user_no) {
+        JSONObject result = new JSONObject();
+        
+    }
+
     public boolean updateChunk(Chunk params) throws Exception {
         if (chunkMapper.isAuthorityOfUpdateChunk(params.getUser_no())) {
             chunkMapper.updateChunk(params);

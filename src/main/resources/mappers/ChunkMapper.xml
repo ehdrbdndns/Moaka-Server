@@ -5,7 +5,7 @@
     <select id="retrieveMainChunkBySectionNo" resultType="Chunk">
         select ch.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no
         from chunk AS ch
-                 LEFT JOIN bookmark AS bo ON ch.no = bo.chunk_no AND bo.user_no=${user_no}
+                 LEFT JOIN bookmark AS bo ON ch.no = bo.chunk_no AND bo.user_no = ${user_no}
                  LEFT JOIN chunk_like as li ON ch.no = li.chunk_no AND li.user_no = ${user_no}
         where ch.section_no = ${section_no}
           AND ch.layer = 0
@@ -17,6 +17,13 @@
         where group_num = ${group_num}
           AND layer = 1
         ORDER BY content_order ASC
+    </select>
+    <select id="retrieveChunkOfBookmarkByUserNo" resultType="Chunk">
+        select ch.*
+        from chunk AS ch
+                 LEFT JOIN bookmark AS bo ON bo.chunk_no = ch.no
+        where bo.store_type = 'bookmark'
+          AND bo.user_no = ${user_no}
     </select>
     <insert id="insertChunk">
         insert into chunk(link, link_title, link_description, title, description, thumbnail, section_no, user_no,
@@ -37,7 +44,9 @@
         </selectKey>
     </insert>
     <select id="selectRelativeChunkNumber" resultType="int">
-        select count(*) from chunk where group_num=${group_num}
+        select count(*)
+        from chunk
+        where group_num = ${group_num}
     </select>
     <update id="updateGroupNumOfChunk">
         update chunk
@@ -71,7 +80,8 @@
         SELECT EXISTS(SELECT *
                       FROM section AS se
                                JOIN archive AS ar ON se.archive_no = ar.no
-                      WHERE se.no = ${section_no} AND (ar.privacy_type = 'public' OR ar.user_no = ${user_no}))
+                      WHERE se.no = ${section_no}
+                        AND (ar.privacy_type = 'public' OR ar.user_no = ${user_no}))
     </select>
     <select id="isAuthorityOfUpdateChunk" resultType="boolean">
         SELECT EXISTS(SELECT *

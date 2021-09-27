@@ -30,7 +30,7 @@ public class UserService {
 
     public JSONArray retrieveDirectory(int user_no) throws Exception {
         JSONArray directoryList = new JSONArray();
-        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveFromUserNo(user_no);
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveByUserNo(user_no);
         for(int i = 0; i < archiveList.size(); i++) {
             JSONObject directoryInfo = new JSONObject();
             Archive archive = archiveList.get(i);

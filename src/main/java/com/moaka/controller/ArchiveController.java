@@ -8,6 +8,7 @@ import com.moaka.dto.Section;
 import com.moaka.service.ArchiveService;
 import com.moaka.service.SectionService;
 import com.moaka.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.JSONArray;
@@ -32,12 +33,37 @@ public class ArchiveController {
     JwtTokenProvider jwtTokenProvider;
 
     @ApiOperation(value = "소속 아카이브 리스트 검색", notes = "사용자의 소속 아카이브를 검색합니다.")
-    @PostMapping(value = "/user/retrieveArchiveFromGroup", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> retrieveArchiveFromGroup(@ApiParam(value = "JWT Token만 필요", required = false)
-                                                           @RequestHeader Map<String, String> headers) {
+    @PostMapping(value = "/user/retrieveArchiveOfGroupByUserNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfGroupByUserNo(@ApiParam(value = "JWT Token만 필요", required = false)
+                                                                 @RequestHeader Map<String, String> headers) {
         try {
             int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
-            JSONObject result = archiveService.retrieveArchiveFromGroup(user_no);
+            JSONObject result = archiveService.retrieveArchiveOfGroupByUserNo(user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "북마크한 아카이브 리스트 검색", notes = "사용자가 북마크한 아카이브를 검색합니다.")
+    @PostMapping(value = "/user/retrieveArchiveOfBookmarkByUserNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfBookmarkByUserNo(@RequestHeader Map<String, String> headers) {
+        try {
+            int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            JSONObject result = archiveService.retrieveArchiveOfBookmarkByUserNo(user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "상위 아카이브 리스트 검색", notes = "상위 아카이브를 검색합니다.")
+    @PostMapping(value = "/retrieveArchiveOfTop", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfTop() {
+        try {
+            JSONObject result = archiveService.retrieveArchiveOfTop();
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

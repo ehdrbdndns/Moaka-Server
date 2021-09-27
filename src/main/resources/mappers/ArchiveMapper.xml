@@ -9,21 +9,37 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
-    <insert id="insertArchiveGroupFromArchive">
+    <insert id="insertArchiveOfGroup">
         INSERT INTO archive_group(user_no, archive_no, regdate)
         VALUES (${user_no}, ${archive_no}, #{regdate})
     </insert>
-    <select id="retrieveArchiveFromGroup" resultType="Archive">
-        SELECT ar.*, us.name AS creator_name
+    <select id="retrieveArchiveOfGroupByUserNo" resultType="Archive">
+        SELECT ar.*, us.name AS creator_name, 'group' AS type
         FROM archive_group AS ar_gr
                  LEFT JOIN archive AS ar ON ar_gr.archive_no = ar.no
                  LEFT JOIN user AS us ON ar_gr.user_no = us.no
         WHERE ar_gr.user_no = ${user_no}
     </select>
-    <select id="retrieveArchiveFromUserNo" resultType="Archive">
+    <select id="retrieveArchiveByUserNo" resultType="Archive">
         select *
         from archive
         where user_no = ${user_no}
+    </select>
+    <select id="retrieveArchiveOfBookmarkByUserNo" resultType="Archive">
+        SELECT ar.*, 'bookmark' AS type
+        FROM archive AS ar
+                 LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
+        WHERE bo.store_type = 'archive'
+          AND bo.user_no = ${user_no}
+    </select>
+    <select id="retrieveArchiveOfTop" resultType="Archive">
+        SELECT ar.*, count(Distinct bo.no) AS bookCount, count(Distinct al.no) AS likeCount, 'top' AS type
+        FROM archive AS ar
+                 LEFT JOIN archive_like AS al ON al.archive_no = ar.no
+                 LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
+        GROUP BY ar.no
+        ORDER BY bookCount + likeCount DESC
+        LIMIT 3
     </select>
     <select id="retrieveArchiveFromArchiveNo" resultType="Archive">
         select ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no, us.name AS creator_name
@@ -43,7 +59,7 @@
         where no =${archive_no}
     </delete>
     <select id="retrieveArchiveBySearch" resultType="Archive">
-        SELECT ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no
+        SELECT ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no, 'search' AS type
         FROM archive AS ar
                  LEFT JOIN bookmark AS bo
                            ON bo.store_type = 'archive' AND ar.no = bo.archive_no AND bo.user_no = ${user_no}

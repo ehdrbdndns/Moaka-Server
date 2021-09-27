@@ -11,12 +11,14 @@ import java.util.ArrayList;
 @Repository
 @Mapper
 public interface ArchiveMapper {
-    ArrayList<Archive> retrieveArchiveFromGroup(int user_no);
-    ArrayList<Archive> retrieveArchiveFromUserNo(int user_no);
+    ArrayList<Archive> retrieveArchiveOfGroupByUserNo(int user_no);
+    ArrayList<Archive> retrieveArchiveByUserNo(int user_no);
+    ArrayList<Archive> retrieveArchiveOfBookmarkByUserNo(int user_no);
+    ArrayList<Archive> retrieveArchiveOfTop();
     Archive retrieveArchiveFromArchiveNo(@Param("archive_no") int archive_no, @Param("user_no") int user_no);
     boolean isAuthorityOfDeleteArchive(@Param("archive_no") int archive_no, @Param("user_no") int user_no);
     void deleteArchiveFromArchiveNo(@Param("archive_no") int archive_no);
     void insertArchive(Archive archive);
-    void insertArchiveGroupFromArchive(@Param("user_no") Integer user_no, @Param("archive_no") int archive_no, @Param("regdate") String regdate);
+    void insertArchiveOfGroup(@Param("user_no") Integer user_no, @Param("archive_no") int archive_no, @Param("regdate") String regdate);
     ArrayList<Archive> retrieveArchiveBySearch(@Param("param") String param, @Param("user_no") int user_no);
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public interface ChunkMapper {
     ArrayList<Chunk> retrieveMainChunkBySectionNo(@Param("section_no") int section_no, @Param("user_no") int user_no);
     ArrayList<Chunk> retrieveRelativeChunkByGroupNum(int group_num);
+    ArrayList<Chunk> retrieveChunkOfBookmarkByUserNo(int user_no);
     void insertChunk(Chunk chunk);
     void insertRelativeChunk(Chunk chunk);
     int selectRelativeChunkNumber(int group_num);

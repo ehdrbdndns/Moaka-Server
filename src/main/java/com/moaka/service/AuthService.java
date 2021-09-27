@@ -81,7 +81,7 @@ public class AuthService {
             archiveInfo.setRegdate(today);
 
             archiveMapper.insertArchive(archiveInfo);
-            archiveMapper.insertArchiveGroupFromArchive(archiveInfo.getUser_no(), archiveInfo.getNo(), today);
+            archiveMapper.insertArchiveOfGroup(archiveInfo.getUser_no(), archiveInfo.getNo(), today);
 
             result.put("no", params.getNo());
             result.put("isSuccess", true);
