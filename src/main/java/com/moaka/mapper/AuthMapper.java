@@ -16,4 +16,5 @@ public interface AuthMapper {
     User retrieveUserById(@Param("id") String id);
     JwtUser retrieveJwtUserById(@Param("id") String id);
     ArrayList<User> retrieveUserListById(@Param("id") String id);
+    ArrayList<String> retrieveCategoryListByUserNo(@Param("user_no") int user_no);
 }

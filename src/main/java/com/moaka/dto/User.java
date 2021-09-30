@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.ArrayList;
+
 @Data
 @ToString
 public class User {
@@ -22,6 +24,8 @@ public class User {
     private String profile;
     @ApiParam(value = "사용자 Auth 타입", required = false, example = "google or local")
     private String auth_type;
+    @ApiParam(value = "사용자 카테고리 리스트", required = false)
+    private ArrayList<String> categoryList;
     // 사용자 생성 날짜
     private String regdate;
 }

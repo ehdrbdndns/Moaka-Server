@@ -35,4 +35,8 @@
     <select id="retrieveUserListById" resultType="User">
         select * from user where id = #{id}
     </select>
+
+    <select id="retrieveCategoryListByUserNo" resultType="String">
+        select category from category where user_no = ${user_no}
+    </select>
 </mapper>

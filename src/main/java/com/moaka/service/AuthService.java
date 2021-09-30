@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
@@ -30,22 +31,23 @@ public class AuthService {
     ArchiveMapper archiveMapper;
     @Autowired
     SectionMapper sectionMapper;
-    
+
     @Autowired
     EncryptionService encryptionService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     public JSONObject login(User params) {
-        try{
+        try {
             JSONObject result = new JSONObject();
             User userInfo = authMapper.login(params);
+            ArrayList<String> categoryList = authMapper.retrieveCategoryListByUserNo(userInfo.getNo());
             String message = "";
             boolean isLogin = false;
-            if(userInfo != null) {
+            if (userInfo != null) {
                 System.out.println("로그인 성공");
                 isLogin = true;
-                message = jwtTokenProvider.createToken(userInfo.getId(), Collections.singletonList("ROLE_USER"), userInfo.getNo(), userInfo.getName(), userInfo.getProfile());
+                message = jwtTokenProvider.createToken(userInfo.getId(), Collections.singletonList("ROLE_USER"), userInfo.getNo(), userInfo.getName(), userInfo.getProfile(), categoryList);
             } else {
                 System.out.println("로그인 실패");
                 isLogin = false;
@@ -54,7 +56,7 @@ public class AuthService {
             result.put("isLogin", isLogin);
             result.put("token", message);
             return result;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
@@ -64,7 +66,7 @@ public class AuthService {
         JSONObject result = new JSONObject();
         // 회원 유저 여부
         User user = authMapper.retrieveUserById(params.getId());
-        if(user != null) {
+        if (user != null) {
             System.out.println("기존 유저입니다.");
             result.put("isSuccess", false);
         } else {
@@ -89,7 +91,7 @@ public class AuthService {
         return result;
     }
 
-    public String getToday(){
+    public String getToday() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(cal.getTime());
