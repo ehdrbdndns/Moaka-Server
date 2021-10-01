@@ -12,6 +12,7 @@ public class Archive {
     private int no;
     private String title;
     private String description;
+    private String category;
     private String thumbnail;
     private MultipartFile thumbnailFile;
     private String privacy_type;

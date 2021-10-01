@@ -3,8 +3,8 @@
 
 <mapper namespace="com.moaka.mapper.ArchiveMapper">
     <insert id="insertArchive">
-        INSERT INTO archive(title, privacy_type, user_no, regdate, description, thumbnail)
-        VALUES(#{title}, #{privacy_type}, ${user_no}, #{regdate}, #{description}, #{thumbnail})
+        INSERT INTO archive(title, privacy_type, user_no, regdate, description, thumbnail, category)
+        VALUES(#{title}, #{privacy_type}, ${user_no}, #{regdate}, #{description}, #{thumbnail}, #{category})
         <selectKey keyProperty="no" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>

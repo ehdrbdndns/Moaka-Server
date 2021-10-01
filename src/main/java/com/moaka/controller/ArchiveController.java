@@ -115,6 +115,7 @@ public class ArchiveController {
             params.setUser_no(user_no);
             archiveService.insertArchive(params);
             JSONObject result = archiveService.retrieveArchiveFromArchiveNo(params.getNo(), user_no);
+            result.put("isSuccess", true);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
