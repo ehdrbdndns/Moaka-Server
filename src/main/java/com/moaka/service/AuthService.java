@@ -1,5 +1,6 @@
 package com.moaka.service;
 
+import com.moaka.common.cdn.CdnService;
 import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
@@ -34,6 +35,8 @@ public class AuthService {
 
     @Autowired
     EncryptionService encryptionService;
+    @Autowired
+    CdnService cdnService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -88,6 +91,30 @@ public class AuthService {
             result.put("no", params.getNo());
             result.put("isSuccess", true);
         }
+        return result;
+    }
+
+    public JSONObject updateUserInfo(User params) {
+        JSONObject result = new JSONObject();
+        // TODO profile File 값이 널이 아닌 경우 profile 업데이트
+        if (params.getProfileFile() != null) {
+            // profile 업데이트
+            String profileUrl = cdnService.FileUpload("user/" + params.getName() + "/profile", params.getProfileFile());
+            params.setProfile(profileUrl);
+        }
+
+        authMapper.updateUserInfo(params.getNo(), params.getProfile(), params.getName());
+        authMapper.deleteUserCategory(params.getNo());
+        for(int i = 0; i < params.getCategoryList().size(); i++) {
+            authMapper.insertUserCategory(params.getCategoryList().get(i), params.getNo());
+        }
+
+        String token = jwtTokenProvider.createToken(params.getId(), Collections.singletonList("ROLE_USER"), params.getNo(), params.getName(), params.getProfile(), params.getCategoryList());
+        
+        result.put("isSuccess", true);
+        result.put("token", token);
+        result.put("profile", params.getProfile());
+
         return result;
     }
 
