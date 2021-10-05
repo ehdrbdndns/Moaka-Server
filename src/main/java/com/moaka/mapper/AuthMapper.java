@@ -6,11 +6,11 @@ import org.apache.ibatis.annotations.Param;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 @Repository
 @Mapper
 public interface AuthMapper {
     User login(User user);
     void register(User user);
-    User retrieveUserById(@Param("id") String id);
-    JwtUser retrieveJwtUserById(@Param("id") String id);
 }

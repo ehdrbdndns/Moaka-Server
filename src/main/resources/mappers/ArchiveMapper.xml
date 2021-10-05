@@ -2,16 +2,102 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.moaka.mapper.ArchiveMapper">
-    <select id="retrieveArchiveFromGroup" resultType="Archive">
-        SELECT ar.*, us.name AS creator_name
+    <insert id="insertArchive">
+        INSERT INTO archive(title, privacy_type, user_no, regdate, description, thumbnail, category)
+        VALUES(#{title}, #{privacy_type}, ${user_no}, #{regdate}, #{description}, #{thumbnail}, #{category})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <insert id="insertArchiveOfGroup">
+        INSERT INTO archive_group(user_no, archive_no, regdate)
+        VALUES (${user_no}, ${archive_no}, #{regdate})
+    </insert>
+    <delete id="deleteArchiveOfGroupByArchiveNo">
+        DELETE FROM archive_group WHERE archive_no=${archive_no}
+    </delete>
+    <select id="retrieveArchiveOfGroupByUserNo" resultType="Archive">
+        SELECT ar.*, us.name AS creator_name, 'group' AS type
         FROM archive_group AS ar_gr
                  LEFT JOIN archive AS ar ON ar_gr.archive_no = ar.no
                  LEFT JOIN user AS us ON ar_gr.user_no = us.no
         WHERE ar_gr.user_no = ${user_no}
     </select>
-    <select id="retrieveArchiveFromUserNo" resultType="Archive">
+    <select id="retrieveArchiveByUserNo" resultType="Archive">
         select *
         from archive
         where user_no = ${user_no}
     </select>
+    <select id="retrieveArchiveOfBookmarkByUserNo" resultType="Archive">
+        SELECT ar.*, 'bookmark' AS type, us.name AS creator_name
+        FROM archive AS ar
+                 LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
+                 LEFT JOIN user AS us ON ar.user_no = us.no
+        WHERE bo.store_type = 'archive'
+          AND bo.user_no = ${user_no}
+    </select>
+    <select id="retrieveArchiveOfTop" resultType="Archive">
+        SELECT ar.*,
+               count(Distinct bo.no) AS bookCount,
+               count(Distinct al.no) AS likeCount,
+               'top'                 AS type,
+               us.name               AS creator_name
+        FROM archive AS ar
+                 LEFT JOIN archive_like AS al ON al.archive_no = ar.no
+                 LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
+                 LEFT JOIN user AS us ON ar.user_no = us.no
+        GROUP BY ar.no
+        ORDER BY bookCount + likeCount DESC LIMIT 3
+    </select>
+    <select id="retrieveArchiveOfCategory" resultType="Archive">
+        SELECT ar.*, 'category' AS type, us.name AS creator_name
+        FROM archive AS ar
+        LEFT JOIN user AS us ON ar.user_no = us.no
+        WHERE category IN
+        <foreach item="arr" collection="array" open="(" separator="," close=")">
+            #{arr}
+        </foreach>
+        ORDER BY no DESC
+    </select>
+    <select id="retrieveArchiveFromArchiveNo" resultType="Archive">
+        select ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no, us.name AS creator_name
+        from archive AS ar
+                 LEFT JOIN bookmark AS bo
+                           ON bo.store_type = 'archive' AND ar.no = bo.archive_no AND bo.user_no = ${user_no}
+                 LEFT JOIN archive_like AS li On ar.no = li.archive_no AND li.user_no = ${user_no}
+                 LEFT JOIN user AS us ON ar.user_no = us.no
+        where ar.no = ${archive_no}
+    </select>
+    <select id="isAuthorityOfDeleteArchive" resultType="boolean">
+        SELECT EXISTS(select * from archive where no=${archive_no} AND user_no=${user_no})
+    </select>
+    <delete id="deleteArchiveFromArchiveNo">
+        delete
+        from archive
+        where no =${archive_no}
+    </delete>
+    <select id="retrieveArchiveBySearch" resultType="Archive">
+        SELECT ar.*,
+               IF(bo.no, bo.no, 0) AS bookmark_no,
+               IF(li.no, li.no, 0) AS like_no,
+               'search'            AS type,
+               us.name             AS creator_name
+        FROM archive AS ar
+                 LEFT JOIN bookmark AS bo
+                           ON bo.store_type = 'archive' AND ar.no = bo.archive_no AND bo.user_no = ${user_no}
+                 LEFT JOIN archive_like AS li On ar.no = li.archive_no AND li.user_no = ${user_no}
+                 LEFT JOIN user AS us ON ar.user_no = us.no
+        WHERE ar.privacy_type = 'public'
+          AND (ar.title LIKE #{param} OR ar.description LIKE #{param} OR
+               (SELECT EXISTS(SELECT * FROM tag AS ta WHERE ta.archive_no = ar.no AND ta.tag LIKE #{param})));
+    </select>
+    <update id="updateArchive">
+        UPDATE archive
+        SET title=#{title},
+            privacy_type=#{privacy_type},
+            description=#{description},
+            thumbnail=#{thumbnail},
+            category=#{category}
+        WHERE no=${no}
+    </update>
 </mapper>

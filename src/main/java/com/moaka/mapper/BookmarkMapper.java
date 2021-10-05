@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface BookmarkMapper {
     void insertBookmarkOfChunk(Bookmark bookmark);
+    void insertBookmarkOfArchive(Bookmark bookmark);
     void deleteBookmark(int bookmarkNo);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 @RequiredArgsConstructor
@@ -30,8 +31,8 @@ public class JwtAuthenticationController {
     @ApiOperation(value = "JWT 토큰 받기 인증 테스트", notes = "북마크를 사용자 개인 저장소에 저장합니다.")
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public String createAuthenticationToken(@ApiParam(value = "id", example = "ehdrbdndns@naver.com")
-                                                @RequestParam(value = "id") String id) throws Exception {
-        return jwtTokenProvider.createToken(id, Collections.singletonList("ROLE_USER"), 2, "testName", "./img/");
+                                            @RequestParam(value = "id") String id) throws Exception {
+        return jwtTokenProvider.createToken(id, Collections.singletonList("ROLE_USER"), 2, "testName", "./img/", new ArrayList<>());
     }
 
     @ApiOperation(value = "JWT 토큰 인증 테스트", notes = "북마크를 사용자 개인 저장소에 저장합니다.")

@@ -12,9 +12,11 @@ import java.util.ArrayList;
 public interface TagMapper {
     void insertSectionTag(Tag tag);
     void insertChunkTag(Tag tag);
+    void insertArchiveTag(Tag tag);
     ArrayList<String> retrieveArchiveTagByArchiveNo(int archive_no);
     ArrayList<String> retrieveSectionTagBySectionNo(int section_no);
     ArrayList<String> retrieveChunkTagByChunkNo(int chunk_no);
     void deleteSectionTagBySectionNo(int section_no);
     void deleteChunkTagByChunkNo(int chunk_no);
+    void deleteArchiveTagByArchiveNo(int archive_no);
 }

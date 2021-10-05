@@ -1,0 +1,49 @@
+# DB
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://moaka-db.ctldqhksk1xl.ap-northeast-2.rds.amazonaws.com:3306/moaka?characterEncoding=UTF-8&serverTimezone=UTC
+    username: moaka
+    password: moaka1234
+
+---
+#Mybatis
+mybatis:
+  type-aliases-package: com.moaka.dto
+  mapper-locations: classpath:mappers/*.xml
+
+---
+#Aws
+cloud:
+  aws:
+    s3:
+      bucket: moaka-s3
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instanceProfile: true
+
+---
+#Mail
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: moaka.team@gmail.com
+    password: Moaka2021
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+---
+#File size
+spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB

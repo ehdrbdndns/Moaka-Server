@@ -1,12 +1,10 @@
 package com.moaka.service;
 
 import com.moaka.dto.Chunk;
+import com.moaka.dto.Comment;
 import com.moaka.dto.Section;
 import com.moaka.dto.Tag;
-import com.moaka.mapper.BookmarkMapper;
-import com.moaka.mapper.ChunkMapper;
-import com.moaka.mapper.SectionMapper;
-import com.moaka.mapper.TagMapper;
+import com.moaka.mapper.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +29,9 @@ public class SectionService {
     @Autowired
     ChunkMapper chunkMapper;
 
+    @Autowired
+    CommentMapper commentMapper;
+
     public void updateSection(Section params) throws Exception {
         sectionMapper.updateSection(params);
         tagMapper.deleteSectionTagBySectionNo(params.getNo());
@@ -52,12 +53,23 @@ public class SectionService {
         for(int i = 0; i < sectionList.size(); i++) {
             JSONObject sectionInfo = new JSONObject();
             Section section = sectionList.get(i);
+            // TODO 섹션 태그 추출
             ArrayList<String> sectionTagList = tagMapper.retrieveSectionTagBySectionNo(section.getNo());
+            // TODO 섹션의 청크 리스트 추출
             ArrayList<Chunk> chunkList = chunkMapper.retrieveMainChunkBySectionNo(section.getNo(), user_no);
 
             for(int j = 0; j < chunkList.size(); j++) {
+                // TODO 청크의 태그 리스트
                 ArrayList<String> chunkTagList = tagMapper.retrieveChunkTagByChunkNo(chunkList.get(j).getNo());
                 chunkList.get(j).setTag_list(chunkTagList);
+
+                // TODO 청크의 관련 청크
+                ArrayList<Chunk> relativeChunkList = chunkMapper.retrieveRelativeChunkByGroupNum(chunkList.get(j).getNo());
+                chunkList.get(j).setRelative_chunk_list(relativeChunkList);
+
+                // TODO 청크의 댓글
+                ArrayList<Comment> commentList = commentMapper.selectCommentOfChunk(chunkList.get(j).getNo());
+                chunkList.get(j).setComment_list(commentList);
             }
 
             // TODO JSON 데이터 생성

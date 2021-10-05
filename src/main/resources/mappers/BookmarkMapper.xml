@@ -9,6 +9,13 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
+    <insert id="insertBookmarkOfArchive">
+        INSERT INTO bookmark(archive_no, store_type, regdate, user_no)
+        VALUES (${archive_no}, 'archive', #{regdate}, ${user_no})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
     <delete id="deleteBookmark">
         DELETE
         FROM bookmark

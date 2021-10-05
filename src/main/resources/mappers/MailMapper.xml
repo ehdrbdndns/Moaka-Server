@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moaka.mapper.MailMapper">
+    <insert id="insertMailCode">
+        insert into mail_code(code, valid, regdate)
+        values (${code}, 1, #{regdate})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <delete id="deleteMailCode">
+        delete
+        from mail_code
+        where no = ${no}
+    </delete>
+
+    <update id="expireValidOfMailCode">
+        update mail_code set valid=0 where no=${no}
+    </update>
+
+    <select id="isExistCode" resultType="boolean">
+        select EXISTS(select no from mail_code where no=${no} AND code=${code} AND valid=1)
+    </select>
+
+    <delete id="resetMailCode">
+        <![CDATA[ delete from mail_code where regdate < #{regdate} ]]>
+    </delete>
+</mapper>
