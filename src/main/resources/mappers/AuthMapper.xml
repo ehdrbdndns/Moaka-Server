@@ -21,34 +21,4 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
-
-     <select id="retrieveUserById" resultType="User">
-        select * from user
-        where id=#{id}
-     </select>
-
-    <select id="retrieveJwtUserById" resultType="JwtUser">
-        select * from user
-        where id=#{id}
-    </select>
-
-    <select id="retrieveUserListById" resultType="User">
-        select * from user where id = #{id}
-    </select>
-
-    <select id="retrieveCategoryListByUserNo" resultType="String">
-        select category from category where user_no = ${user_no}
-    </select>
-
-    <update id="updateUserInfo">
-        UPDATE user SET name=#{name}, profile=#{profile} WHERE no=${user_no}
-    </update>
-
-    <insert id="insertUserCategory">
-        INSERT INTO category(user_no, category) VALUES(${user_no}, #{category})
-    </insert>
-
-    <delete id="deleteUserCategory">
-        DELETE FROM category where user_no=${user_no}
-    </delete>
 </mapper>

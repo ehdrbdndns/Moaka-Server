@@ -10,13 +10,14 @@ import com.moaka.dto.User;
 import com.moaka.mapper.ArchiveMapper;
 import com.moaka.mapper.AuthMapper;
 import com.moaka.mapper.SectionMapper;
+import com.moaka.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,8 @@ import java.util.Collections;
 public class AuthService {
     @Autowired
     AuthMapper authMapper;
+    @Autowired
+    UserMapper userMapper;
     @Autowired
     ArchiveMapper archiveMapper;
     @Autowired
@@ -44,7 +47,7 @@ public class AuthService {
         try {
             JSONObject result = new JSONObject();
             User userInfo = authMapper.login(params);
-            ArrayList<String> categoryList = authMapper.retrieveCategoryListByUserNo(userInfo.getNo());
+            ArrayList<String> categoryList = userMapper.retrieveCategoryListByUserNo(userInfo.getNo());
             String message = "";
             boolean isLogin = false;
             if (userInfo != null) {
@@ -68,7 +71,7 @@ public class AuthService {
     public JSONObject register(User params) throws Exception {
         JSONObject result = new JSONObject();
         // 회원 유저 여부
-        User user = authMapper.retrieveUserById(params.getId());
+        User user = userMapper.retrieveUserById(params.getId());
         if (user != null) {
             System.out.println("기존 유저입니다.");
             result.put("isSuccess", false);
@@ -94,26 +97,32 @@ public class AuthService {
         return result;
     }
 
-    public JSONObject updateUserInfo(User params) {
+    public JSONObject updateUserInfo(User params) throws IOException {
         JSONObject result = new JSONObject();
-        // TODO profile File 값이 널이 아닌 경우 profile 업데이트
-        if (params.getProfileFile() != null) {
-            // profile 업데이트
-            String profileUrl = cdnService.FileUpload("user/" + params.getName() + "/profile", params.getProfileFile());
-            params.setProfile(profileUrl);
-        }
+        try {
+            // TODO profile File 값이 널이 아닌 경우 profile 업데이트
+            if (params.getProfileFile() != null) {
+                // profile 업데이트
+                cdnService.FileDelete(params.getProfile());
+                String profileUrl = cdnService.FileUpload("user/" + params.getName() + "/profile", params.getProfileFile());
+                params.setProfile(profileUrl);
+            }
 
-        authMapper.updateUserInfo(params.getNo(), params.getProfile(), params.getName());
-        authMapper.deleteUserCategory(params.getNo());
-        for(int i = 0; i < params.getCategoryList().size(); i++) {
-            authMapper.insertUserCategory(params.getCategoryList().get(i), params.getNo());
-        }
+            userMapper.updateUserInfo(params.getNo(), params.getProfile(), params.getName());
+            userMapper.deleteUserCategory(params.getNo());
+            for (int i = 0; i < params.getCategoryList().size(); i++) {
+                userMapper.insertUserCategory(params.getCategoryList().get(i), params.getNo());
+            }
 
-        String token = jwtTokenProvider.createToken(params.getId(), Collections.singletonList("ROLE_USER"), params.getNo(), params.getName(), params.getProfile(), params.getCategoryList());
-        
-        result.put("isSuccess", true);
-        result.put("token", token);
-        result.put("profile", params.getProfile());
+            String token = jwtTokenProvider.createToken(params.getId(), Collections.singletonList("ROLE_USER"), params.getNo(), params.getName(), params.getProfile(), params.getCategoryList());
+
+            result.put("isSuccess", true);
+            result.put("token", token);
+            result.put("profile", params.getProfile());
+        } catch (IOException e) {
+            e.printStackTrace();
+            result.put("isSuccess", false);
+        }
 
         return result;
     }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Service
 @Transactional
@@ -56,6 +57,42 @@ public class ArchiveService {
         }
     }
 
+    public JSONObject updateArchive(Archive params) throws IOException {
+        JSONObject result = new JSONObject();
+
+        if (params.getThumbnailFile() != null) {
+            cdnService.FileDelete(params.getThumbnail());
+            String thumbnailUrl = cdnService.FileUpload("archive/thumbnail", params.getThumbnailFile());
+            params.setThumbnail(thumbnailUrl);
+        }
+
+        // 아카이브 정보 업데이트
+        archiveMapper.updateArchive(params);
+
+        // 아카이브 그룹 정보 업데이트
+        String today = getToday();
+        archiveMapper.deleteArchiveOfGroupByArchiveNo(params.getNo());
+        for (int i = 0; i < params.getGroup_no_list().size(); i++) {
+            archiveMapper.insertArchiveOfGroup(params.getGroup_no_list().get(i), params.getNo(), today);
+        }
+
+        // 아카이브 태그 정보 업데이트
+        tagMapper.deleteArchiveTagByArchiveNo(params.getNo());
+        for (int i = 0; i < params.getTag_list().size(); i++) {
+            Tag tag = new Tag();
+            tag.setTag(params.getTag_list().get(i));
+            tag.setRegdate(today);
+            tag.setArchive_no(params.getNo());
+
+            tagMapper.insertArchiveTag(tag);
+        }
+
+        result.put("thumbnail", params.getThumbnail());
+        result.put("isSuccess", true);
+
+        return result;
+    }
+
     public JSONObject retrieveArchiveOfGroupByUserNo(int user_no) {
         JSONObject result = new JSONObject();
         ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfGroupByUserNo(user_no);
@@ -83,7 +120,7 @@ public class ArchiveService {
     public JSONObject retrieveArchiveOfTop() {
         JSONObject result = new JSONObject();
         ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfTop();
-        for(int i = 0; i < archiveList.size(); i++) {
+        for (int i = 0; i < archiveList.size(); i++) {
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
             archiveList.get(i).setTag_list(tagList);
         }
@@ -110,8 +147,24 @@ public class ArchiveService {
         archiveObj.put("tag_list", archive.getTag_list());
         archiveObj.put("bookmark_no", archive.getBookmark_no());
         archiveObj.put("like_no", archive.getLike_no());
+        archiveObj.put("category", archive.getCategory());
 
         result.put("archive", archiveObj);
+        return result;
+    }
+
+    public JSONObject retrieveArchiveOfCategory(List<String> categoryList) {
+        JSONObject result = new JSONObject();
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfCategory(categoryList);
+
+        for (int i = 0; i < archiveList.size(); i++) {
+            ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
+            archiveList.get(i).setTag_list(tagList);
+        }
+
+        result.put("isSuccess", true);
+        result.put("archive_list", archiveList);
+
         return result;
     }
 
@@ -131,7 +184,7 @@ public class ArchiveService {
     public JSONObject retrieveArchiveBySearch(String param, int user_no) {
         JSONObject result = new JSONObject();
         ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveBySearch(param, user_no);
-        for(int i = 0; i < archiveList.size(); i++) {
+        for (int i = 0; i < archiveList.size(); i++) {
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
             archiveList.get(i).setTag_list(tagList);
         }

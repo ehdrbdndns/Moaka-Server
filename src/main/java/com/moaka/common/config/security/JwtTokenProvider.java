@@ -85,6 +85,11 @@ public class JwtTokenProvider {
         return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("profile");
     }
 
+    // 토큰에서 카테고리 리스트 추출
+    public List<String> getCategoryList(String token) {
+        return (List<String>) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("category");
+    }
+
     public JSONObject setUser(String token) {
         JSONObject result = new JSONObject();
         result.put("no", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("no"));

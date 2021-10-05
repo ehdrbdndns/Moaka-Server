@@ -49,4 +49,8 @@
         where store_type = 'chunk'
           AND chunk_no = ${chunk_no}
     </delete>
+
+    <delete id="deleteArchiveTagByArchiveNo">
+        DELETE FROM tag WHERE store_type = 'archive' AND archive_no=${archive_no}
+    </delete>
 </mapper>

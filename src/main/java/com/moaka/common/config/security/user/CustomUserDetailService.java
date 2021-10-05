@@ -2,6 +2,7 @@ package com.moaka.common.config.security.user;
 
 import com.moaka.dto.JwtUser;
 import com.moaka.mapper.AuthMapper;
+import com.moaka.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -17,11 +18,11 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
     @Autowired
-    AuthMapper authMapper;
+    UserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        JwtUser users = authMapper.retrieveJwtUserById(id);
+        JwtUser users = userMapper.retrieveJwtUserById(id);
         if(users != null && users.getUsername().equals(id)) {
             System.out.println("**************Found user***************");
             System.out.println("id : " + users.getUsername());

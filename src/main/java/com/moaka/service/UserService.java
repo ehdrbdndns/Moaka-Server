@@ -4,10 +4,7 @@ import com.moaka.dto.Archive;
 import com.moaka.dto.Chunk;
 import com.moaka.dto.Section;
 import com.moaka.dto.User;
-import com.moaka.mapper.ArchiveMapper;
-import com.moaka.mapper.AuthMapper;
-import com.moaka.mapper.BookmarkMapper;
-import com.moaka.mapper.SectionMapper;
+import com.moaka.mapper.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,7 @@ public class UserService {
     @Autowired
     SectionMapper sectionMapper;
     @Autowired
-    AuthMapper authMapper;
+    UserMapper userMapper;
 
     public JSONArray retrieveDirectory(int user_no) throws Exception {
         JSONArray directoryList = new JSONArray();
@@ -56,7 +53,7 @@ public class UserService {
     public JSONObject retrieveUserListById(String id) {
         JSONObject result = new JSONObject();
 
-        ArrayList<User> userList = authMapper.retrieveUserListById(id);
+        ArrayList<User> userList = userMapper.retrieveUserListById(id);
         if(userList.size() != 0) {
             // 아이디를 찾음
             JSONArray userInfoList = new JSONArray();
@@ -76,6 +73,14 @@ public class UserService {
             result.put("isSuccess", false);
         }
 
+        return result;
+    }
+
+    public JSONObject retrieveGroupUserOfArchiveByArchiveNo(int archive_no) {
+        JSONObject result = new JSONObject();
+        ArrayList<User> userList = userMapper.retrieveGroupUserOfArchiveByArchiveNo(archive_no);
+        result.put("isSuccess", true);
+        result.put("user_list", userList);
         return result;
     }
 }
