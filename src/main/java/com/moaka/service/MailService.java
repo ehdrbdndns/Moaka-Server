@@ -5,6 +5,7 @@ import com.moaka.dto.MailCode;
 import com.moaka.dto.User;
 import com.moaka.mapper.AuthMapper;
 import com.moaka.mapper.MailMapper;
+import com.moaka.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class MailService {
     @Autowired
     MailMapper mailMapper;
     @Autowired
-    AuthMapper authMapper;
+    UserMapper userMapper;
 
     private JavaMailSender mailSender;
     private static final String FROM_ADDRESS = "moaka.team@gmail.com";
@@ -37,7 +38,7 @@ public class MailService {
      */
     public JSONObject mailSend(Mail mail) {
         JSONObject result = new JSONObject();
-        User user  = authMapper.retrieveUserById(mail.getAddress());
+        User user  = userMapper.retrieveUserById(mail.getAddress());
         if(user == null) {
             MailCode mailCode = new MailCode();
 

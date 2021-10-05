@@ -18,4 +18,5 @@ public interface TagMapper {
     ArrayList<String> retrieveChunkTagByChunkNo(int chunk_no);
     void deleteSectionTagBySectionNo(int section_no);
     void deleteChunkTagByChunkNo(int chunk_no);
+    void deleteArchiveTagByArchiveNo(int archive_no);
 }

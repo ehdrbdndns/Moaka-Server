@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +39,14 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(String userPk, List<String> roles, int no, String name, String profile) {
+    public String createToken(String userPk, List<String> roles, int no, String name, String profile, ArrayList<String> categoryList) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         claims.put("no", no);
         claims.put("id", userPk);
         claims.put("name", name);
         claims.put("profile", profile);
+        claims.put("category", categoryList);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
@@ -83,12 +85,18 @@ public class JwtTokenProvider {
         return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("profile");
     }
 
+    // 토큰에서 카테고리 리스트 추출
+    public List<String> getCategoryList(String token) {
+        return (List<String>) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("category");
+    }
+
     public JSONObject setUser(String token) {
         JSONObject result = new JSONObject();
         result.put("no", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("no"));
         result.put("id", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("id"));
         result.put("name", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("name"));
         result.put("profile", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("profile"));
+        result.put("category", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("category"));
         return result;
     }
 

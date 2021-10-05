@@ -8,6 +8,7 @@ import com.moaka.dto.Section;
 import com.moaka.service.ArchiveService;
 import com.moaka.service.SectionService;
 import com.moaka.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.json.JSONArray;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,12 +34,37 @@ public class ArchiveController {
     JwtTokenProvider jwtTokenProvider;
 
     @ApiOperation(value = "소속 아카이브 리스트 검색", notes = "사용자의 소속 아카이브를 검색합니다.")
-    @PostMapping(value = "/user/retrieveArchiveFromGroup", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> retrieveArchiveFromGroup(@ApiParam(value = "JWT Token만 필요", required = false)
-                                                           @RequestHeader Map<String, String> headers) {
+    @PostMapping(value = "/user/retrieveArchiveOfGroupByUserNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfGroupByUserNo(@ApiParam(value = "JWT Token만 필요", required = false)
+                                                                 @RequestHeader Map<String, String> headers) {
         try {
             int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
-            JSONObject result = archiveService.retrieveArchiveFromGroup(user_no);
+            JSONObject result = archiveService.retrieveArchiveOfGroupByUserNo(user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "북마크한 아카이브 리스트 검색", notes = "사용자가 북마크한 아카이브를 검색합니다.")
+    @PostMapping(value = "/user/retrieveArchiveOfBookmarkByUserNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfBookmarkByUserNo(@RequestHeader Map<String, String> headers) {
+        try {
+            int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            JSONObject result = archiveService.retrieveArchiveOfBookmarkByUserNo(user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "상위 아카이브 리스트 검색", notes = "상위 아카이브를 검색합니다.")
+    @PostMapping(value = "/retrieveArchiveOfTop", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfTop() {
+        try {
+            JSONObject result = archiveService.retrieveArchiveOfTop();
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,6 +104,20 @@ public class ArchiveController {
         }
     }
 
+    @ApiOperation(value = "아카이브의 관심 카테고리 리스트", notes = "아카이브의 관심 카테고리 리스트")
+    @PostMapping(value = "/user/retrieveArchiveOfCategory", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfCategory(@ApiParam(value = "카테고리 리스트", required = true)
+                                                            @RequestHeader Map<String, String> headers) {
+        try {
+            List<String> categoryList = jwtTokenProvider.getCategoryList(headers.get("bearer"));
+            JSONObject result = archiveService.retrieveArchiveOfCategory(categoryList);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
     @ApiOperation(value = "아카이브 생성", notes = "아카이브를 생성합니다.")
     @PostMapping(value = "/user/insertArchive", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> insertArchive(
@@ -89,6 +130,24 @@ public class ArchiveController {
             params.setUser_no(user_no);
             archiveService.insertArchive(params);
             JSONObject result = archiveService.retrieveArchiveFromArchiveNo(params.getNo(), user_no);
+            result.put("isSuccess", true);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "아카이브 수정", notes = "아카이브를 수정합니다.")
+    @PostMapping(value = "/user/updateArchive", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> updateArchive(@ApiParam(value = "수정될 아카이브 내용")
+                                                @RequestPart(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
+                                                @RequestPart(value = "archive") Archive params) {
+        try {
+            if (thumbnailFile != null) {
+                params.setThumbnailFile(thumbnailFile);
+            }
+            JSONObject result = archiveService.updateArchive(params);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

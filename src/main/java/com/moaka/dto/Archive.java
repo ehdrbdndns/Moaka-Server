@@ -12,6 +12,7 @@ public class Archive {
     private int no;
     private String title;
     private String description;
+    private String category;
     private String thumbnail;
     private MultipartFile thumbnailFile;
     private String privacy_type;
@@ -23,6 +24,10 @@ public class Archive {
 
     private int bookmark_no;
     private int like_no;
+
+    // 아카이브 형태 eX) 검색, 그룹, 추천, 북마크 등등
+    private String type;
+
     ArrayList<User> user_list;
     ArrayList<Section> section_list;
     ArrayList<String> tag_list;

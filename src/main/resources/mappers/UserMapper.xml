@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moaka.mapper.UserMapper">
+    <select id="retrieveUserById" resultType="User">
+        select *
+        from user
+        where id = #{id}
+    </select>
+
+    <select id="retrieveJwtUserById" resultType="JwtUser">
+        select *
+        from user
+        where id = #{id}
+    </select>
+
+    <select id="retrieveUserListById" resultType="User">
+        select *
+        from user
+        where id = #{id}
+    </select>
+
+    <select id="retrieveCategoryListByUserNo" resultType="String">
+        select category
+        from category
+        where user_no = ${user_no}
+    </select>
+
+    <update id="updateUserInfo">
+        UPDATE user
+        SET name=#{name},
+            profile=#{profile}
+        WHERE no =${user_no}
+    </update>
+
+    <insert id="insertUserCategory">
+        INSERT INTO category(user_no, category)
+        VALUES (${user_no}, #{category})
+    </insert>
+
+    <delete id="deleteUserCategory">
+        DELETE
+        FROM category
+        where user_no = ${user_no}
+    </delete>
+
+    <select id="retrieveGroupUserOfArchiveByArchiveNo" resultType="User">
+        SELECT us.*
+        FROM archive_group AS ag
+                 LEFT JOIN user AS us
+                           ON ag.user_no = us.no
+        WHERE ag.archive_no = ${archive_no}
+    </select>
+</mapper>

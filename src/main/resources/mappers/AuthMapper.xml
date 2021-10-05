@@ -21,18 +21,4 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
-
-     <select id="retrieveUserById" resultType="User">
-        select * from user
-        where id=#{id}
-     </select>
-
-    <select id="retrieveJwtUserById" resultType="JwtUser">
-        select * from user
-        where id=#{id}
-    </select>
-
-    <select id="retrieveUserListById" resultType="User">
-        select * from user where id = #{id}
-    </select>
 </mapper>

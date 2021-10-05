@@ -13,7 +13,4 @@ import java.util.ArrayList;
 public interface AuthMapper {
     User login(User user);
     void register(User user);
-    User retrieveUserById(@Param("id") String id);
-    JwtUser retrieveJwtUserById(@Param("id") String id);
-    ArrayList<User> retrieveUserListById(@Param("id") String id);
 }

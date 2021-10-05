@@ -31,10 +31,10 @@ public class UserController {
     @PostMapping(value = "/retrieveLocalDirectory", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> retrieveLocalDirectory(@ApiParam(value = "user_no", required = true, example = "4")
                                                          @RequestParam(value = "user_no") int user_no) {
-        try{
+        try {
             JSONArray directoryList = userService.retrieveDirectory(user_no);
             return new ResponseEntity<>(directoryList.toString(), HttpStatus.CREATED);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
@@ -43,11 +43,24 @@ public class UserController {
     @ApiOperation(value = "이메일로 사용자 찾기", notes = "이메일로 사용자 찾기")
     @PostMapping(value = "/retrieveUserListById", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> retrieveUserListById(@ApiParam(value = "id", required = true, example = "test@naver.com")
-                                                         @RequestParam(value = "id") String id) {
-        try{
+                                                       @RequestParam(value = "id") String id) {
+        try {
             JSONObject result = userService.retrieveUserListById(id);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "아카이브 번호로 그룹 유저 찾기", notes = "아카이브 번호로 그룹 유저 찾기")
+    @PostMapping(value = "/retrieveGroupUserOfArchiveByArchiveNo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveGroupUserOfArchiveByArchiveNo(@ApiParam(value = "archive_no", required = true)
+                                                                        @RequestParam(value = "archive_no") int archive_no) {
+        try {
+            JSONObject result = userService.retrieveGroupUserOfArchiveByArchiveNo(archive_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
