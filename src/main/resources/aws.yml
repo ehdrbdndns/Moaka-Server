@@ -1,6 +1,0 @@
-# aws secret
-cloud:
-  aws:
-    credentials:
-      accessKey: sceret
-      secretKey: sceret
