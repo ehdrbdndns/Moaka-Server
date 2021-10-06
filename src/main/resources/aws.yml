@@ -1,0 +1,6 @@
+# aws secret
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAQX3PWTRPAAK2PGOO
+      secretKey: 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
