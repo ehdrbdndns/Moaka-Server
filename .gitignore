@@ -40,6 +40,5 @@ out/
 !**/src/main/**/resources/application.properties
 
 ## yml
-application.yml
 aws.yml
-src/main/resources/application.yml
+# jwt.yml

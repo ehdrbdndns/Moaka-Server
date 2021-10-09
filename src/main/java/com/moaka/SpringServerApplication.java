@@ -13,6 +13,7 @@ public class SpringServerApplication {
 
     public static final String APPLICATION_LOCATIONS = "spring.config.location="
             + "classpath:application.yml,"
+            + "classpath:jwt.yml,"
             + "classpath:aws.yml";
 
     public static void main(String[] args) {

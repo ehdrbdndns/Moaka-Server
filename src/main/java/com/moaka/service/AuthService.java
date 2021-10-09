@@ -1,6 +1,6 @@
 package com.moaka.service;
 
-import com.moaka.common.cdn.CdnService;
+import com.moaka.common.cdn.S3Uploader;
 import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
@@ -39,7 +39,7 @@ public class AuthService {
     @Autowired
     EncryptionService encryptionService;
     @Autowired
-    CdnService cdnService;
+    S3Uploader s3Uploader;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -103,8 +103,8 @@ public class AuthService {
             // TODO profile File 값이 널이 아닌 경우 profile 업데이트
             if (params.getProfileFile() != null) {
                 // profile 업데이트
-                cdnService.FileDelete(params.getProfile());
-                String profileUrl = cdnService.FileUpload("user/" + params.getName() + "/profile", params.getProfileFile());
+                s3Uploader.delete(params.getProfile());
+                String profileUrl = s3Uploader.upload(params.getProfileFile(), "user/" + params.getName() + "/profile");
                 params.setProfile(profileUrl);
             }
 

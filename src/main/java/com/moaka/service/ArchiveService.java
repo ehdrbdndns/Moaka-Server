@@ -1,13 +1,10 @@
 package com.moaka.service;
 
-import com.moaka.common.cdn.CdnService;
-import com.moaka.common.exception.ErrorCode;
-import com.moaka.common.exception.InternalServiceException;
+import com.moaka.common.cdn.S3Uploader;
 import com.moaka.dto.Archive;
 import com.moaka.dto.Tag;
 import com.moaka.mapper.ArchiveMapper;
 import com.moaka.mapper.TagMapper;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,13 +24,13 @@ public class ArchiveService {
     @Autowired
     TagMapper tagMapper;
     @Autowired
-    CdnService cdnService;
+    S3Uploader s3Uploader;
 
-    public void insertArchive(Archive params) {
+    public void insertArchive(Archive params) throws IOException {
         String today = getToday();
 
         // CDN 썸네일 생성
-        String thumbnailUrl = cdnService.FileUpload("archive/thumbnail", params.getThumbnailFile());
+        String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
         params.setRegdate(today);
         params.setThumbnail(thumbnailUrl);
 
@@ -61,8 +58,8 @@ public class ArchiveService {
         JSONObject result = new JSONObject();
 
         if (params.getThumbnailFile() != null) {
-            cdnService.FileDelete(params.getThumbnail());
-            String thumbnailUrl = cdnService.FileUpload("archive/thumbnail", params.getThumbnailFile());
+            s3Uploader.delete(params.getThumbnail().split("https://moaka-s3.s3.ap-northeast-2.amazonaws.com/")[1]);
+            String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
             params.setThumbnail(thumbnailUrl);
         }
 
