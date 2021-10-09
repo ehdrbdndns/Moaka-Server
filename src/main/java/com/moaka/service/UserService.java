@@ -23,6 +23,8 @@ public class UserService {
     @Autowired
     SectionMapper sectionMapper;
     @Autowired
+    TagMapper tagMapper;
+    @Autowired
     UserMapper userMapper;
 
     public JSONArray retrieveDirectory(int user_no) throws Exception {
@@ -34,15 +36,17 @@ public class UserService {
             ArrayList<Section> sectionList = sectionMapper.retrieveSectionByArchiveNo(archive.getNo());
 
             if (sectionList.size() != 0) {
-                directoryInfo.put("archive_no", archive.getNo());
-                directoryInfo.put("archive_title", archive.getTitle());
                 JSONArray sectionArray = new JSONArray();
                 for (int j = 0; j < sectionList.size(); j++) {
                     JSONObject sectionInfo = new JSONObject();
+                    ArrayList<String> tagList = tagMapper.retrieveSectionTagBySectionNo(sectionList.get(j).getNo());
                     sectionInfo.put("no", sectionList.get(j).getNo());
                     sectionInfo.put("title", sectionList.get(j).getTitle());
+                    sectionInfo.put("tag_list", tagList);
                     sectionArray.put(sectionInfo);
                 }
+                directoryInfo.put("archive_no", archive.getNo());
+                directoryInfo.put("archive_title", archive.getTitle());
                 directoryInfo.put("section_list", sectionArray);
                 directoryList.put(directoryInfo);
             }
