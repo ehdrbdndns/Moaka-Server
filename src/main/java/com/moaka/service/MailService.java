@@ -36,10 +36,10 @@ public class MailService {
      * setSubject: 제목
      * setText: 메세지 내용
      */
-    public JSONObject mailSend(Mail mail) {
+    public JSONObject mailSendOfRegister(Mail mail) {
         JSONObject result = new JSONObject();
-        User user  = userMapper.retrieveUserById(mail.getAddress());
-        if(user == null) {
+        User user = userMapper.retrieveUserById(mail.getAddress());
+        if (user == null) {
             MailCode mailCode = new MailCode();
 
             int code = (int) (Math.random() * 10000) + 10000;
@@ -61,7 +61,40 @@ public class MailService {
             result.put("no", mailCode.getNo());
         } else {
             result.put("isSuccess", false);
+            result.put("no", 0);
         }
+
+        return result;
+    }
+
+    /**
+     * setTo: 받는 사람 주소
+     * setFrom: 보내는 사람 주소
+     * setSubject: 제목
+     * setText: 메세지 내용
+     */
+    public JSONObject mailSend(Mail mail, String subject) {
+        JSONObject result = new JSONObject();
+
+        MailCode mailCode = new MailCode();
+
+        int code = (int) (Math.random() * 10000) + 10000;
+        mail.setMessage(code + "");
+        mailCode.setCode(code);
+        mailCode.setRegdate(getToday());
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(mail.getAddress());
+        message.setFrom(MailService.FROM_ADDRESS);
+        message.setSubject(subject);
+        message.setText(mail.getMessage());
+
+        mailSender.send(message);
+
+        mailMapper.insertMailCode(mailCode);
+
+        result.put("isSuccess", true);
+        result.put("no", mailCode.getNo());
 
         return result;
     }
@@ -69,7 +102,7 @@ public class MailService {
     public JSONObject isExistCode(int no, int code) {
         JSONObject result = new JSONObject();
         boolean isExistCode = mailMapper.isExistCode(no, code);
-        if(isExistCode) {
+        if (isExistCode) {
             // 코드 존재
             mailMapper.expireValidOfMailCode(no);
             result.put("isSuccess", true);
@@ -87,15 +120,15 @@ public class MailService {
         result.put("isSuccess", true);
         return result;
     }
-    
+
     @Scheduled(cron = "0 0 23 * * *")
     public void resetMailCode() {
         String today = getToday();
-        System.out.println("메일 코드 초기화: " + today );
+        System.out.println("메일 코드 초기화: " + today);
         mailMapper.resetMailCode(today);
     }
 
-    public String getToday(){
+    public String getToday() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(cal.getTime());

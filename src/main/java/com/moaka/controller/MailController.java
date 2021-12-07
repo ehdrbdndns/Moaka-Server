@@ -26,7 +26,22 @@ public class MailController {
         try {
             Mail mail = new Mail();
             mail.setAddress(address);
-            JSONObject result = mailService.mailSend(mail);
+            JSONObject result = mailService.mailSendOfRegister(mail);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "인증 코드 메일 전송", notes = "인증 메일 전송")
+    @PostMapping(value = "/sendMailCode",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> sendMailCode(@RequestParam(value = "address", required = true) String address) {
+        try {
+            Mail mail = new Mail();
+            mail.setAddress(address);
+            System.out.println("sendMailCode");
+            JSONObject result = mailService.mailSend(mail, "모아카 비밀번호 찾기 인증번호입니다.");
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

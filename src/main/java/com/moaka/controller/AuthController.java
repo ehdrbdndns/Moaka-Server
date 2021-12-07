@@ -114,11 +114,25 @@ public class AuthController {
                                                  @RequestHeader Map<String, String> headers) {
         try {
             params.setNo(jwtTokenProvider.getUserNo(headers.get("bearer")));
-            if(profileFile != null) {
+            if (profileFile != null) {
                 params.setProfileFile(profileFile);
             }
             JSONObject result = authService.updateUserInfo(params);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "사용자 비밀번호 변경", notes = "사용자의 비밀번호를 변경합니다.")
+    @PostMapping(value = "/changeUserPwd", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> changeUserPwd(@RequestParam(value = "email") String email,
+                              @RequestParam(value = "pwd") String pwd) {
+        try {
+            String _pwd = encryptionService.encryptionSHA256(pwd);
+            authService.changeUserPwdByEmail(_pwd, email);
+            return new ResponseEntity<>("", HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());

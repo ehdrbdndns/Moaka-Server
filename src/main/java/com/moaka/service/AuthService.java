@@ -47,11 +47,11 @@ public class AuthService {
         try {
             JSONObject result = new JSONObject();
             User userInfo = authMapper.login(params);
-            ArrayList<String> categoryList = userMapper.retrieveCategoryListByUserNo(userInfo.getNo());
             String message = "";
             boolean isLogin = false;
             if (userInfo != null) {
                 System.out.println("로그인 성공");
+                ArrayList<String> categoryList = userMapper.retrieveCategoryListByUserNo(userInfo.getNo());
                 isLogin = true;
                 message = jwtTokenProvider.createToken(userInfo.getId(), Collections.singletonList("ROLE_USER"), userInfo.getNo(), userInfo.getName(), userInfo.getProfile(), categoryList);
             } else {
@@ -125,6 +125,11 @@ public class AuthService {
         }
 
         return result;
+    }
+
+    public void changeUserPwdByEmail(String pwd, String email) {
+        JSONObject result = new JSONObject();
+        authMapper.changeUserPwdByEmail(pwd, email);
     }
 
     public String getToday() {

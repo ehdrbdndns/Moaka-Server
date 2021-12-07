@@ -21,4 +21,8 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
+
+    <update id="changeUserPwdByEmail">
+        update user set pwd = #{pwd} where id=#{email}
+    </update>
 </mapper>
