@@ -8,6 +8,12 @@
         where id = #{id}
     </select>
 
+    <select id="retrieveUserByName" resultType="User">
+        select *
+        from user
+        where name = #{name}
+    </select>
+
     <select id="retrieveJwtUserById" resultType="JwtUser">
         select *
         from user

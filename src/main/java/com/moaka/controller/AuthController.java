@@ -1,5 +1,6 @@
 package com.moaka.controller;
 
+import com.moaka.common.cdn.S3Uploader;
 import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -27,6 +29,8 @@ public class AuthController {
     AuthService authService;
     @Autowired
     EncryptionService encryptionService;
+    @Autowired
+    S3Uploader s3Uploader;
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
@@ -51,6 +55,86 @@ public class AuthController {
         }
         JSONObject result = authService.login(user);
         return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "구글 회원가입", notes = "구글 사용자 회원가입")
+    @PostMapping(value = "/googleRegister",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> googleRegister(@ApiParam(value="sub")
+                                                @RequestParam(value="sub") String sub,
+                                                @ApiParam(value = "id")
+                                                @RequestParam(value = "id") String id,
+                                                @ApiParam(value = "name")
+                                                @RequestParam(value = "name") String name,
+                                                @ApiParam(value = "profileFile")
+                                                @RequestParam(value = "profileFile", required = false) MultipartFile profileFile,
+                                                @ApiParam(value = "profile")
+                                                @RequestParam(value="profile", required = false) String profile,
+                                                @ApiParam(value="categoryList")
+                                                @RequestParam(value="categoryList") ArrayList<String> categoryList) {
+        try {
+            User params = new User();
+            params.setSub(sub);
+            params.setId(id);
+            params.setPwd(" ");
+            params.setName(name);
+            params.setCategoryList(categoryList);
+            params.setAuth_type("google");
+            params.setRegdate(getToday());
+            params.setAge(0);
+
+            if(profileFile != null) {
+                String url = s3Uploader.upload(profileFile, "user/" + name + "/profile");
+                params.setProfile(url);
+            } else {
+                params.setProfile(profile);
+            }
+
+            JSONObject result = authService.register(params);
+
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "로컬 회원가입", notes = "로컬 사용자 회원가입")
+    @PostMapping(value = "/localRegister",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> localRegister(@ApiParam(value = "id")
+                                                @RequestParam(value = "id") String id,
+                                                @ApiParam(value = "pwd")
+                                                @RequestParam(value = "pwd") String pwd,
+                                                @ApiParam(value = "name")
+                                                @RequestParam(value = "name") String name,
+                                                @ApiParam(value = "profileFile")
+                                                @RequestParam(value = "profileFile", required = false) MultipartFile profileFile,
+                                                @ApiParam(value="categoryList")
+                                                @RequestParam(value="categoryList") ArrayList<String> categoryList) {
+        try {
+            User params = new User();
+            params.setId(id);
+            params.setPwd(encryptionService.encryptionSHA256(pwd));
+            params.setName(name);
+            params.setCategoryList(categoryList);
+            params.setSub("local_" + id);
+            params.setAuth_type("local");
+            params.setRegdate(getToday());
+            params.setAge(0);
+
+            if(profileFile != null) {
+                String url = s3Uploader.upload(profileFile, "user/" + name + "/profile");
+                params.setProfile(url);
+            } else {
+                params.setProfile("/img/default_profile.png");
+            }
+
+            JSONObject result = authService.register(params);
+
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
     }
 
     @ApiOperation(value = "회원가입", notes = "구글 사용자는 sub와 사용자 정보, 로컬 사용자는 ID PWD와 사용자 정보로 회원가입을 합니다.")
@@ -128,7 +212,7 @@ public class AuthController {
     @ApiOperation(value = "사용자 비밀번호 변경", notes = "사용자의 비밀번호를 변경합니다.")
     @PostMapping(value = "/changeUserPwd", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> changeUserPwd(@RequestParam(value = "email") String email,
-                              @RequestParam(value = "pwd") String pwd) {
+                                                @RequestParam(value = "pwd") String pwd) {
         try {
             String _pwd = encryptionService.encryptionSHA256(pwd);
             authService.changeUserPwdByEmail(_pwd, email);

@@ -80,6 +80,20 @@ public class UserService {
         return result;
     }
 
+    public JSONObject retrieveUserListByName(String name) {
+        JSONObject result = new JSONObject();
+
+        User user = userMapper.retrieveUserByName(name);
+        if(user != null) {
+            result.put("user", user);
+            result.put("isSuccess", true);
+        } else {
+            result.put("isSuccess", false);
+        }
+
+        return result;
+    }
+
     public JSONObject retrieveGroupUserOfArchiveByArchiveNo(int archive_no) {
         JSONObject result = new JSONObject();
         ArrayList<User> userList = userMapper.retrieveGroupUserOfArchiveByArchiveNo(archive_no);

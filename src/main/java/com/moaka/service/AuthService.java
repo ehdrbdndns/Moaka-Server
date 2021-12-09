@@ -73,18 +73,19 @@ public class AuthService {
         // 회원 유저 여부
         User user = userMapper.retrieveUserById(params.getId());
         if (user != null) {
-            System.out.println("기존 유저입니다.");
             result.put("isSuccess", false);
         } else {
-            System.out.println("기존 유저가 아닙니다.");
             authMapper.register(params);
+            for(int i = 0; i < params.getCategoryList().size(); i++) {
+                userMapper.insertUserCategory(params.getCategoryList().get(i), params.getNo());
+            }
             String today = getToday();
 
             Archive archiveInfo = new Archive();
             archiveInfo.setThumbnail("https://moaka-s3.s3.ap-northeast-2.amazonaws.com/logo/moaka_logo.png");
             archiveInfo.setUser_no(params.getNo());
             archiveInfo.setTitle("개인 저장소");
-            archiveInfo.setDescription("개인적으로 사용할 수 있는 아카이브입니다.");
+            archiveInfo.setDescription("자동 생선된 아카이브입니다.");
             archiveInfo.setPrivacy_type("private");
             archiveInfo.setRegdate(today);
 

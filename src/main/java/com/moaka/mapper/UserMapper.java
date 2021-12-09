@@ -12,6 +12,7 @@ import java.util.ArrayList;
 @Mapper
 public interface UserMapper {
     User retrieveUserById(@Param("id") String id);
+    User retrieveUserByName(@Param("name") String name);
     JwtUser retrieveJwtUserById(@Param("id") String id);
     ArrayList<User> retrieveUserListById(@Param("id") String id);
     ArrayList<String> retrieveCategoryListByUserNo(@Param("user_no") int user_no);

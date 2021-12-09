@@ -53,6 +53,19 @@ public class UserController {
         }
     }
 
+    @ApiOperation(value = "이름으로 사용자 찾기", notes = "이름으로 사용자 찾기")
+    @PostMapping(value = "/retrieveUserByName", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveUserListByName(@ApiParam(value = "name", required = true, example = "홍길동")
+                                                       @RequestParam(value = "name") String name) {
+        try {
+            JSONObject result = userService.retrieveUserListByName(name);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
     @ApiOperation(value = "아카이브 번호로 그룹 유저 찾기", notes = "아카이브 번호로 그룹 유저 찾기")
     @PostMapping(value = "/retrieveGroupUserOfArchiveByArchiveNo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> retrieveGroupUserOfArchiveByArchiveNo(@ApiParam(value = "archive_no", required = true)
