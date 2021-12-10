@@ -22,4 +22,8 @@
         SET title = #{title}, description = #{description}
         WHERE no = ${no}
     </update>
+
+    <select id="retrieveFirstSectionByArchiveNo" resultType="Section">
+        SELECT * FROM section WHERE archive_no = ${archive_no} ORDER BY no ASC LIMIT 1
+    </select>
 </mapper>

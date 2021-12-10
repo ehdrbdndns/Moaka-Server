@@ -13,4 +13,5 @@ import java.util.ArrayList;
 public interface AuthMapper {
     User login(User user);
     void register(User user);
+    void changeUserPwdByEmail(@Param("pwd") String pwd, @Param("email") String email);
 }
