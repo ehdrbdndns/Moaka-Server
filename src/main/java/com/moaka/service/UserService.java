@@ -35,21 +35,9 @@ public class UserService {
             Archive archive = archiveList.get(i);
             ArrayList<Section> sectionList = sectionMapper.retrieveSectionByArchiveNo(archive.getNo());
 
-            if (sectionList.size() != 0) {
-                JSONArray sectionArray = new JSONArray();
-                for (int j = 0; j < sectionList.size(); j++) {
-                    JSONObject sectionInfo = new JSONObject();
-                    ArrayList<String> tagList = tagMapper.retrieveSectionTagBySectionNo(sectionList.get(j).getNo());
-                    sectionInfo.put("no", sectionList.get(j).getNo());
-                    sectionInfo.put("title", sectionList.get(j).getTitle());
-                    sectionInfo.put("tag_list", tagList);
-                    sectionArray.put(sectionInfo);
-                }
-                directoryInfo.put("archive_no", archive.getNo());
-                directoryInfo.put("archive_title", archive.getTitle());
-                directoryInfo.put("section_list", sectionArray);
-                directoryList.put(directoryInfo);
-            }
+            directoryInfo.put("title", archive.getTitle());
+            directoryInfo.put("list", sectionList);
+            directoryList.put(directoryInfo);
         }
         return directoryList;
     }

@@ -6,6 +6,7 @@ import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
 import com.moaka.common.jwt.EncryptionService;
 import com.moaka.dto.Archive;
+import com.moaka.dto.Section;
 import com.moaka.dto.User;
 import com.moaka.mapper.ArchiveMapper;
 import com.moaka.mapper.AuthMapper;
@@ -84,13 +85,21 @@ public class AuthService {
             Archive archiveInfo = new Archive();
             archiveInfo.setThumbnail("https://moaka-s3.s3.ap-northeast-2.amazonaws.com/logo/moaka_logo.png");
             archiveInfo.setUser_no(params.getNo());
-            archiveInfo.setTitle("개인 저장소");
-            archiveInfo.setDescription("자동 생선된 아카이브입니다.");
+            archiveInfo.setTitle("개인 디렉토리");
+            archiveInfo.setDescription("자동 생성된 아카이브입니다.");
             archiveInfo.setPrivacy_type("private");
             archiveInfo.setRegdate(today);
 
             archiveMapper.insertArchive(archiveInfo);
             archiveMapper.insertArchiveOfGroup(archiveInfo.getUser_no(), archiveInfo.getNo(), today);
+
+            Section sectionInfo = new Section();
+            sectionInfo.setTitle("저장소");
+            sectionInfo.setArchive_no(archiveInfo.getNo());
+            sectionInfo.setDescription("기본적으로 생성된 저장소입니다.");
+            sectionInfo.setRegdate(getToday());
+
+            sectionMapper.insertSection(sectionInfo);
 
             result.put("no", params.getNo());
             result.put("isSuccess", true);

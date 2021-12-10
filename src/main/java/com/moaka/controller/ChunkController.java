@@ -3,9 +3,13 @@ package com.moaka.controller;
 import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
+import com.moaka.dto.Archive;
 import com.moaka.dto.Chunk;
+import com.moaka.dto.Section;
+import com.moaka.service.ArchiveService;
 import com.moaka.service.BookmarkService;
 import com.moaka.service.ChunkService;
+import com.moaka.service.SectionService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,12 @@ import java.util.Map;
 
 @RestController
 public class ChunkController {
+    @Autowired
+    ArchiveService archiveService;
+
+    @Autowired
+    SectionService sectionService;
+
     @Autowired
     ChunkService chunkService;
 
@@ -90,12 +100,30 @@ public class ChunkController {
         }
     }
 
-    @ApiOperation(value = "북마크 삽입", notes = "북마크를 사용자 개인 저장소에 저장합니다.")
+    @ApiOperation(value = "크롬 확장프로그램 북마크 삽입", notes = "북마크를 사용자 개인 저장소에 저장합니다.")
     @PostMapping(value = "/insertChunkFromChrome", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> insertBookmark(@ApiParam(value = "청크에 들어가는 전반적인 내용", required = true)
                                                  @RequestBody Chunk params) {
         try {
+            Archive firstArchive = archiveService.retrieveFirstArchiveByUserNo(params.getUser_no());
+            Section firstSection = sectionService.retrieveFirstSectionByArchiveNo(firstArchive.getNo());
+            params.setSection_no(firstSection.getNo());
             JSONObject result = chunkService.insertChunk(params);
+            result.put("section_no", firstSection.getNo());
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "북마크 수정", notes = "링크 수정")
+    @PostMapping(value = "/updateChunkFromChrome", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateChunkFromChrome(@ApiParam(value = "청크에 들어가는 내용", required = true)
+                                              @RequestBody Chunk params) {
+        try {
+            JSONObject result = new JSONObject();
+            result.put("isSuccess", chunkService.updateChunkFromChrome(params));
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

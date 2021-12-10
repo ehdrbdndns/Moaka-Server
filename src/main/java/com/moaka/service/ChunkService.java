@@ -32,22 +32,13 @@ public class ChunkService {
 
     public JSONObject insertChunk(Chunk chunk) throws Exception {
         JSONObject result = new JSONObject();
-        // TODO archive가 공개인지 체크
+        // TODO 해상 섹션에 대한 권한이 있는지 체크
         if (chunkMapper.isAuthorityOfInsertChunk(chunk.getSection_no(), chunk.getUser_no())) {
             chunk.setRegdate(getToday());
             chunkMapper.insertChunk(chunk);
-            chunkMapper.updateGroupNumOfChunk(chunk.getNo());
 
-            for (int i = 0; i < chunk.getTag_list().size(); i++) {
-                Tag tag = new Tag();
-                tag.setChunk_no(chunk.getNo());
-                tag.setTag(chunk.getTag_list().get(i));
-                tag.setRegdate(chunk.getRegdate());
-                tagMapper.insertChunkTag(tag);
-            }
             result.put("isSuccess", true);
             result.put("no", chunk.getNo());
-            result.put("regdate", chunk.getRegdate());
         } else {
             result.put("isSuccess", false);
         }
@@ -79,7 +70,7 @@ public class ChunkService {
     public JSONObject retrieveChunkOfBookmarkByUserNo(int user_no) {
         JSONObject result = new JSONObject();
         ArrayList<Chunk> chunkList = chunkMapper.retrieveChunkOfBookmarkByUserNo(user_no);
-        for(int i = 0; i < chunkList.size(); i++) {
+        for (int i = 0; i < chunkList.size(); i++) {
             // TODO 태그 리스트
             ArrayList<String> chunkTagList = tagMapper.retrieveChunkTagByChunkNo(chunkList.get(i).getNo());
             chunkList.get(i).setTag_list(chunkTagList);
@@ -99,18 +90,22 @@ public class ChunkService {
     }
 
     public boolean updateChunk(Chunk params) throws Exception {
-        if (chunkMapper.isAuthorityOfUpdateChunk(params.getUser_no())) {
+        if (chunkMapper.isAuthorityOfUpdateChunk(params.getNo(), params.getUser_no())) {
             chunkMapper.updateChunk(params);
-            tagMapper.deleteChunkTagByChunkNo(params.getNo());
-            for (int i = 0; i < params.getTag_list().size(); i++) {
-                Tag tag = new Tag();
-                tag.setChunk_no(params.getNo());
-                tag.setTag(params.getTag_list().get(i));
-                tag.setRegdate(getToday());
-                tagMapper.insertChunkTag(tag);
-            }
+
             return true;
         } else {
+            return false;
+        }
+    }
+
+    public boolean updateChunkFromChrome(Chunk params) throws Exception {
+        if (chunkMapper.isAuthorityOfUpdateChunk(params.getNo(), params.getUser_no())) {
+            chunkMapper.updateChunkFromChrome(params.getDescription(), params.getSection_no(), params.getNo());
+            System.out.println("true");
+            return true;
+        } else {
+            System.out.println("false");
             return false;
         }
     }
@@ -129,55 +124,43 @@ public class ChunkService {
             url = "http://" + url;
         }
 
-        System.out.println("url: " + url);
         Document document = Jsoup.connect(url).get();
 
         URI uri = new URI(url);
         String domain = uri.getHost();
 
-        String title = "";
         String link = url;
         String description = "";
         String thumbnail = "";
         String favicon = "";
 
-        title = document.title();
-        if(title.equals("")) {
-            title = getMetaTagContent(document, "meta[name=title]");
-            if(title.equals("")) {
-                title = getMetaTagContent(document, "meta[property=og:title]");
-            }
-        }
-
         description = getMetaTagContent(document, "meta[name=description]");
-        if(description.equals("")) {
+        if (description.equals("")) {
             description = getMetaTagContent(document, "meta[property=og:description]");
         }
 
         thumbnail = getMetaTagContent(document, "meta[property=og:image]");
-        if(thumbnail.equals("")) {
+        if (thumbnail.equals("")) {
             thumbnail = getMetaTagContent(document, "meta[property=twitter:image]");
-            if(thumbnail.equals("")) {
+            if (thumbnail.equals("")) {
                 thumbnail = getMetaTagSrc(document, "img");
             }
         }
-        if(!thumbnail.startsWith("http")) {
+        if (!thumbnail.startsWith("http")) {
             thumbnail = "http://" + domain + thumbnail;
         }
 
         Element faviconElem = document.head().select("link[href~=.*\\.(ico|png)]").first();
-        if(faviconElem != null) {
+        if (faviconElem != null) {
             favicon = faviconElem.attr("href");
-        }
-        else if(document.head().select("meta[itemprop=image]").first() != null) {
+        } else if (document.head().select("meta[itemprop=image]").first() != null) {
             favicon = document.head().select("meta[itemprop=image]").first().attr("content");
         }
-        if(!favicon.startsWith("http")) {
+        if (!favicon.startsWith("http")) {
             favicon = "http://" + domain + favicon;
         }
 
         JSONObject result = new JSONObject();
-        result.put("title", title);
         result.put("domain", domain);
         result.put("link", link);
         result.put("description", description);

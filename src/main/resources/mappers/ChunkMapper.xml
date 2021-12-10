@@ -29,10 +29,8 @@
         ORDER BY bo.no DESC;
     </select>
     <insert id="insertChunk">
-        insert into chunk(link, link_title, link_description, title, description, thumbnail, section_no, user_no,
-        regdate, layer, content_order)
-        values(#{link}, #{link_title}, #{link_description}, #{title}, #{description}, #{thumbnail}, ${section_no},
-        ${user_no}, #{regdate}, 0, 1)
+        insert into chunk(link, thumbnail, section_no, description, regdate, user_no, favicon, domain)
+        values(#{link}, #{thumbnail}, ${section_no}, #{description}, #{regdate}, ${user_no}, #{favicon}, #{domain})
         <selectKey keyProperty="no" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -51,19 +49,19 @@
         from chunk
         where group_num = ${group_num}
     </select>
-    <update id="updateGroupNumOfChunk">
-        update chunk
-        set group_num = ${chunk_no}
-        where no = ${chunk_no}
-    </update>
     <update id="updateChunk">
         update chunk
         set link=#{link},
-            title=#{title},
             thumbnail=#{thumbnail},
             description=#{description},
-            link_title=#{link_title},
-            link_description=#{link_description}
+            favicon=#{favicon},
+            domain=#{domain}
+        where no = ${no}
+    </update>
+    <update id="updateChunkFromChrome">
+        update chunk
+        set description=#{description},
+            section_no=${section_no}
         where no = ${no}
     </update>
     <delete id="deleteChunk">

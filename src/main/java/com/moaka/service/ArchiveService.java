@@ -191,6 +191,10 @@ public class ArchiveService {
         return result;
     }
 
+    public Archive retrieveFirstArchiveByUserNo(int user_no) {
+        return archiveMapper.retrieveFirstArchiveByUserNo(user_no);
+    }
+
     public String getToday() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
