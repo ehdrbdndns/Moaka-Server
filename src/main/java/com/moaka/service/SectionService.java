@@ -107,6 +107,10 @@ public class SectionService {
         sectionMapper.deleteSection(no);
     }
 
+    public Section retrieveFirstSectionByArchiveNo(int archive_no) {
+        return sectionMapper.retrieveFirstSectionByArchiveNo(archive_no);
+    }
+
     public String getToday(){
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

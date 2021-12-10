@@ -14,6 +14,7 @@ import java.util.List;
 public interface ArchiveMapper {
     ArrayList<Archive> retrieveArchiveOfGroupByUserNo(int user_no);
     ArrayList<Archive> retrieveArchiveByUserNo(int user_no);
+    Archive retrieveFirstArchiveByUserNo(int user_no);
     ArrayList<Archive> retrieveArchiveOfBookmarkByUserNo(int user_no);
     ArrayList<Archive> retrieveArchiveOfTop();
     ArrayList<Archive> retrieveArchiveBySearch(@Param("param") String param, @Param("user_no") int user_no);

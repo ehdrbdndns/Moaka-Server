@@ -28,6 +28,9 @@
         from archive
         where user_no = ${user_no}
     </select>
+    <select id="retrieveFirstArchiveByUserNo" resultType="Archive">
+        SELECT * FROM archive WHERE user_no = ${user_no} ORDER BY no ASC LIMIT 1
+    </select>
     <select id="retrieveArchiveOfBookmarkByUserNo" resultType="Archive">
         SELECT ar.*, 'bookmark' AS type, us.name AS creator_name
         FROM archive AS ar
