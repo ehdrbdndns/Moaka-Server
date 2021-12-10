@@ -8,10 +8,14 @@ import com.moaka.mapper.ChunkMapper;
 import com.moaka.mapper.CommentMapper;
 import com.moaka.mapper.TagMapper;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -118,6 +122,97 @@ public class ChunkService {
         } else {
             return false;
         }
+    }
+
+    public JSONObject linkPreview(String url) throws Exception {
+        if (!url.startsWith("http")) {
+            url = "http://" + url;
+        }
+
+        System.out.println("url: " + url);
+        Document document = Jsoup.connect(url).get();
+
+        URI uri = new URI(url);
+        String domain = uri.getHost();
+
+        String title = "";
+        String link = url;
+        String description = "";
+        String thumbnail = "";
+        String favicon = "";
+
+        title = document.title();
+        if(title.equals("")) {
+            title = getMetaTagContent(document, "meta[name=title]");
+            if(title.equals("")) {
+                title = getMetaTagContent(document, "meta[property=og:title]");
+            }
+        }
+
+        description = getMetaTagContent(document, "meta[name=description]");
+        if(description.equals("")) {
+            description = getMetaTagContent(document, "meta[property=og:description]");
+        }
+
+        thumbnail = getMetaTagContent(document, "meta[property=og:image]");
+        if(thumbnail.equals("")) {
+            thumbnail = getMetaTagContent(document, "meta[property=twitter:image]");
+            if(thumbnail.equals("")) {
+                thumbnail = getMetaTagSrc(document, "img");
+            }
+        }
+        if(!thumbnail.startsWith("http")) {
+            thumbnail = "http://" + domain + thumbnail;
+        }
+
+        Element faviconElem = document.head().select("link[href~=.*\\.(ico|png)]").first();
+        if(faviconElem != null) {
+            favicon = faviconElem.attr("href");
+        }
+        else if(document.head().select("meta[itemprop=image]").first() != null) {
+            favicon = document.head().select("meta[itemprop=image]").first().attr("content");
+        }
+        if(!favicon.startsWith("http")) {
+            favicon = "http://" + domain + favicon;
+        }
+
+        JSONObject result = new JSONObject();
+        result.put("title", title);
+        result.put("domain", domain);
+        result.put("link", link);
+        result.put("description", description);
+        result.put("thumbnail", thumbnail);
+        result.put("favicon", favicon);
+
+        return result;
+    }
+
+    /**
+     * Returns the given meta tag content
+     *
+     * @param document
+     * @return
+     */
+    private String getMetaTagContent(Document document, String cssQuery) {
+        Element elm = document.select(cssQuery).first();
+        if (elm != null) {
+            return elm.attr("content");
+        }
+        return "";
+    }
+
+    /**
+     * Returns the given meta tag src
+     *
+     * @param document
+     * @return
+     */
+    private String getMetaTagSrc(Document document, String cssQuery) {
+        Element elm = document.select(cssQuery).first();
+        if (elm != null) {
+            return elm.attr("src");
+        }
+        return "";
     }
 
     public String getToday() {

@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -108,6 +109,21 @@ public class ChunkController {
         try {
             int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
             JSONObject result = chunkService.retrieveChunkOfBookmarkByUserNo(user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "링크 미리보기", notes = "웹사이트 url을 이용하여 웹페이지를 조회합니다.")
+    @PostMapping(value = "/linkPreview", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> linkPreview(
+            @ApiParam(value = "link")
+            @RequestParam(value = "link") String link) throws IOException {
+
+        try {
+            JSONObject result = chunkService.linkPreview(link);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

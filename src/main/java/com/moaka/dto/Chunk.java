@@ -11,6 +11,8 @@ import java.util.ArrayList;
 public class Chunk {
     @ApiParam(value = "청크 고유번호", required = false, example = "https://moaka.com")
     private int no;
+    @ApiParam(value = "Favicon", required = false)
+    private String favicon;
     @ApiParam(value = "URL", required = false, example = "https://moaka.com")
     private String link;
     @ApiParam(value = "URL 제목", required = false)
