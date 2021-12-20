@@ -50,7 +50,7 @@
                  LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
                  LEFT JOIN user AS us ON ar.user_no = us.no
         GROUP BY ar.no
-        ORDER BY bookCount + likeCount DESC LIMIT 3
+        ORDER BY bookCount + likeCount DESC LIMIT 4
     </select>
     <select id="retrieveArchiveOfCategory" resultType="Archive">
         SELECT ar.*, 'category' AS type, us.name AS creator_name
