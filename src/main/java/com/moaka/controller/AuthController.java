@@ -227,4 +227,17 @@ public class AuthController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(cal.getTime());
     }
+
+    @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴")
+    @PostMapping(value = "/user/withDraw", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> widthDraw(@RequestHeader Map<String, String> headers) {
+        try {
+            int userNo = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            authService.deleteUserByNo(userNo);
+            return new ResponseEntity<>("", HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
 }

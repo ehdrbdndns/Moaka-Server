@@ -142,6 +142,10 @@ public class AuthService {
         authMapper.changeUserPwdByEmail(pwd, email);
     }
 
+    public void deleteUserByNo(int userNo) {
+        authMapper.deleteUserByNo(userNo);
+    }
+
     public String getToday() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

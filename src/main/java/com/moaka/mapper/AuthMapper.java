@@ -14,4 +14,5 @@ public interface AuthMapper {
     User login(User user);
     void register(User user);
     void changeUserPwdByEmail(@Param("pwd") String pwd, @Param("email") String email);
+    void deleteUserByNo(int userNo);
 }
