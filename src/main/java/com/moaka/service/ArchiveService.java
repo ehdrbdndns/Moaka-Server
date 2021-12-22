@@ -114,9 +114,9 @@ public class ArchiveService {
         return result;
     }
 
-    public JSONObject retrieveArchiveOfTop() {
+    public JSONObject retrieveArchiveOfTop(int user_no) {
         JSONObject result = new JSONObject();
-        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfTop();
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfTop(user_no);
         for (int i = 0; i < archiveList.size(); i++) {
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
             archiveList.get(i).setTag_list(tagList);

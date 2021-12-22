@@ -18,8 +18,7 @@
     <select id="retrieveArchiveTagByArchiveNo" resultType="String">
         select tag
         from tag
-        where store_type = 'archive'
-          AND archive_no = ${archive_no}
+        where archive_no = ${archive_no}
     </select>
 
     <select id="retrieveSectionTagBySectionNo" resultType="String">

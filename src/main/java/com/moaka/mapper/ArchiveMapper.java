@@ -16,7 +16,7 @@ public interface ArchiveMapper {
     ArrayList<Archive> retrieveArchiveByUserNo(int user_no);
     Archive retrieveFirstArchiveByUserNo(int user_no);
     ArrayList<Archive> retrieveArchiveOfBookmarkByUserNo(int user_no);
-    ArrayList<Archive> retrieveArchiveOfTop();
+    ArrayList<Archive> retrieveArchiveOfTop(int user_no);
     ArrayList<Archive> retrieveArchiveBySearch(@Param("param") String param, @Param("user_no") int user_no);
     ArrayList<Archive> retrieveArchiveOfCategory(@Param("array") List<String> categoryList);
     Archive retrieveArchiveFromArchiveNo(@Param("archive_no") int archive_no, @Param("user_no") int user_no);

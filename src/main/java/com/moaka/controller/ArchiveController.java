@@ -62,9 +62,13 @@ public class ArchiveController {
 
     @ApiOperation(value = "상위 아카이브 리스트 검색", notes = "상위 아카이브를 검색합니다.")
     @PostMapping(value = "/retrieveArchiveOfTop", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> retrieveArchiveOfTop() {
+    public ResponseEntity<String> retrieveArchiveOfTop(@RequestHeader Map<String, String> headers) {
         try {
-            JSONObject result = archiveService.retrieveArchiveOfTop();
+            int user_no = 0;
+            if(!headers.get("bearer").equals("null")) {
+                user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            }
+            JSONObject result = archiveService.retrieveArchiveOfTop(user_no);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

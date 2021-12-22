@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -144,6 +145,18 @@ public class AuthService {
 
     public void deleteUserByNo(int userNo) {
         authMapper.deleteUserByNo(userNo);
+    }
+
+    public void updateUserProfileByNo(MultipartFile profileFile, String prevProfile, int userNo, String name) throws IOException {
+        String profileUrl = "";
+        if(profileFile == null) {
+            profileUrl = prevProfile;
+        } else {
+            s3Uploader.delete(prevProfile);
+            profileUrl = s3Uploader.upload(profileFile, "user/" + name + "/profile");
+        }
+
+        userMapper.updateUserInfo(userNo, profileUrl, name);
     }
 
     public String getToday() {

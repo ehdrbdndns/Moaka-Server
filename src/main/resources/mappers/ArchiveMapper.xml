@@ -14,7 +14,9 @@
         VALUES (${user_no}, ${archive_no}, #{regdate})
     </insert>
     <delete id="deleteArchiveOfGroupByArchiveNo">
-        DELETE FROM archive_group WHERE archive_no=${archive_no}
+        DELETE
+        FROM archive_group
+        WHERE archive_no = ${archive_no}
     </delete>
     <select id="retrieveArchiveOfGroupByUserNo" resultType="Archive">
         SELECT ar.*, us.name AS creator_name, 'group' AS type
@@ -29,7 +31,10 @@
         where user_no = ${user_no}
     </select>
     <select id="retrieveFirstArchiveByUserNo" resultType="Archive">
-        SELECT * FROM archive WHERE user_no = ${user_no} ORDER BY no ASC LIMIT 1
+        SELECT *
+        FROM archive
+        WHERE user_no = ${user_no}
+        ORDER BY no ASC LIMIT 1
     </select>
     <select id="retrieveArchiveOfBookmarkByUserNo" resultType="Archive">
         SELECT ar.*, 'bookmark' AS type, us.name AS creator_name
@@ -41,25 +46,40 @@
     </select>
     <select id="retrieveArchiveOfTop" resultType="Archive">
         SELECT ar.*,
-               count(Distinct bo.no) AS bookCount,
-               count(Distinct al.no) AS likeCount,
-               'top'                 AS type,
-               us.name               AS creator_name
+               'top'        AS type,
+               us.name      AS creator_name,
+               us.profile   AS creator_profile,
+               count(Distinct ch.no) AS link_count,
+               count(Distinct al.no) AS like_count,
+               count(Distinct bo.no) AS bookmark_count,
+               IF(my_al.no, my_al.no, 0) AS like_no,
+               IF(my_bo.no, my_bo.no, 0) AS bookmark_no
         FROM archive AS ar
                  LEFT JOIN archive_like AS al ON al.archive_no = ar.no
+                 LEFT JOIN archive_like AS my_al ON my_al.archive_no = ar.no AND my_al.user_no=${user_no}
                  LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
+                 LEFT JOIN bookmark AS my_bo ON my_bo.archive_no = ar.no AND my_bo.user_no=${user_no}
                  LEFT JOIN user AS us ON ar.user_no = us.no
+                 LEFT JOIN section AS se ON se.archive_no = ar.no
+                 LEFT JOIN chunk AS ch ON se.no = ch.section_no
         GROUP BY ar.no
-        ORDER BY bookCount + likeCount DESC LIMIT 4
+        ORDER BY bookmark_count + like_count DESC LIMIT 4
     </select>
     <select id="retrieveArchiveOfCategory" resultType="Archive">
-        SELECT ar.*, 'category' AS type, us.name AS creator_name
+        SELECT ar.*,
+        'category' AS type,
+        us.name AS creator_name,
+        us.profile AS creator_profile,
+        count(ch.no) AS link_count
         FROM archive AS ar
         LEFT JOIN user AS us ON ar.user_no = us.no
+        LEFT JOIN section AS se ON se.archive_no = ar.no
+        LEFT JOIN chunk AS ch ON se.no = ch.section_no
         WHERE category IN
         <foreach item="arr" collection="array" open="(" separator="," close=")">
             #{arr}
         </foreach>
+        GROUP BY ar.no
         ORDER BY no DESC
     </select>
     <select id="retrieveArchiveFromArchiveNo" resultType="Archive">
@@ -101,6 +121,6 @@
             description=#{description},
             thumbnail=#{thumbnail},
             category=#{category}
-        WHERE no=${no}
+        WHERE no =${no}
     </update>
 </mapper>

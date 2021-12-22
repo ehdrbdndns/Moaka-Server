@@ -57,19 +57,19 @@ public class AuthController {
     }
 
     @ApiOperation(value = "구글 회원가입", notes = "구글 사용자 회원가입")
-    @PostMapping(value = "/googleRegister",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> googleRegister(@ApiParam(value="sub")
-                                                @RequestParam(value="sub") String sub,
-                                                @ApiParam(value = "id")
-                                                @RequestParam(value = "id") String id,
-                                                @ApiParam(value = "name")
-                                                @RequestParam(value = "name") String name,
-                                                @ApiParam(value = "profileFile")
-                                                @RequestParam(value = "profileFile", required = false) MultipartFile profileFile,
-                                                @ApiParam(value = "profile")
-                                                @RequestParam(value="profile", required = false) String profile,
-                                                @ApiParam(value="categoryList")
-                                                @RequestParam(value="categoryList") ArrayList<String> categoryList) {
+    @PostMapping(value = "/googleRegister", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> googleRegister(@ApiParam(value = "sub")
+                                                 @RequestParam(value = "sub") String sub,
+                                                 @ApiParam(value = "id")
+                                                 @RequestParam(value = "id") String id,
+                                                 @ApiParam(value = "name")
+                                                 @RequestParam(value = "name") String name,
+                                                 @ApiParam(value = "profileFile")
+                                                 @RequestParam(value = "profileFile", required = false) MultipartFile profileFile,
+                                                 @ApiParam(value = "profile")
+                                                 @RequestParam(value = "profile", required = false) String profile,
+                                                 @ApiParam(value = "categoryList")
+                                                 @RequestParam(value = "categoryList") ArrayList<String> categoryList) {
         try {
             User params = new User();
             params.setSub(sub);
@@ -81,7 +81,7 @@ public class AuthController {
             params.setRegdate(getToday());
             params.setAge(0);
 
-            if(profileFile != null) {
+            if (profileFile != null) {
                 String url = s3Uploader.upload(profileFile, "user/" + name + "/profile");
                 params.setProfile(url);
             } else {
@@ -98,7 +98,7 @@ public class AuthController {
     }
 
     @ApiOperation(value = "로컬 회원가입", notes = "로컬 사용자 회원가입")
-    @PostMapping(value = "/localRegister",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/localRegister", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> localRegister(@ApiParam(value = "id")
                                                 @RequestParam(value = "id") String id,
                                                 @ApiParam(value = "pwd")
@@ -107,8 +107,8 @@ public class AuthController {
                                                 @RequestParam(value = "name") String name,
                                                 @ApiParam(value = "profileFile")
                                                 @RequestParam(value = "profileFile", required = false) MultipartFile profileFile,
-                                                @ApiParam(value="categoryList")
-                                                @RequestParam(value="categoryList") ArrayList<String> categoryList) {
+                                                @ApiParam(value = "categoryList")
+                                                @RequestParam(value = "categoryList") ArrayList<String> categoryList) {
         try {
             User params = new User();
             params.setId(id);
@@ -120,7 +120,7 @@ public class AuthController {
             params.setRegdate(getToday());
             params.setAge(0);
 
-            if(profileFile != null) {
+            if (profileFile != null) {
                 String url = s3Uploader.upload(profileFile, "user/" + name + "/profile");
                 params.setProfile(url);
             } else {
@@ -222,12 +222,6 @@ public class AuthController {
         }
     }
 
-    public String getToday() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(cal.getTime());
-    }
-
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴")
     @PostMapping(value = "/user/withDraw", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> widthDraw(@RequestHeader Map<String, String> headers) {
@@ -239,5 +233,27 @@ public class AuthController {
             e.printStackTrace();
             throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
         }
+    }
+
+    @ApiOperation(value = "프로필 변경", notes = "프로필 변경")
+    @PostMapping(value = "/user/updateProfile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> updateProfile(@RequestPart(value = "profileFile", required = false) MultipartFile profileFile,
+                                                @RequestPart(value="name") String name,
+                                                @RequestHeader Map<String, String> headers) {
+        try {
+            int userNo = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            String prevProfile = jwtTokenProvider.getUserProfile(headers.get("bearer"));
+            authService.updateUserProfileByNo(profileFile, prevProfile, userNo, name);
+            return new ResponseEntity<>("", HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    public String getToday() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(cal.getTime());
     }
 }
