@@ -46,22 +46,23 @@
     </select>
     <select id="retrieveArchiveOfTop" resultType="Archive">
         SELECT ar.*,
-               'top'        AS type,
-               us.name      AS creator_name,
-               us.profile   AS creator_profile,
-               count(Distinct ch.no) AS link_count,
-               count(Distinct al.no) AS like_count,
-               count(Distinct bo.no) AS bookmark_count,
+               'top'                     AS type,
+               us.name                   AS creator_name,
+               us.profile                AS creator_profile,
+               count(Distinct ch.no)     AS link_count,
+               count(Distinct al.no)     AS like_count,
+               count(Distinct bo.no)     AS bookmark_count,
                IF(my_al.no, my_al.no, 0) AS like_no,
                IF(my_bo.no, my_bo.no, 0) AS bookmark_no
         FROM archive AS ar
                  LEFT JOIN archive_like AS al ON al.archive_no = ar.no
-                 LEFT JOIN archive_like AS my_al ON my_al.archive_no = ar.no AND my_al.user_no=${user_no}
+                 LEFT JOIN archive_like AS my_al ON my_al.archive_no = ar.no AND my_al.user_no = ${user_no}
                  LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
-                 LEFT JOIN bookmark AS my_bo ON my_bo.archive_no = ar.no AND my_bo.user_no=${user_no}
+                 LEFT JOIN bookmark AS my_bo ON my_bo.archive_no = ar.no AND my_bo.user_no = ${user_no}
                  LEFT JOIN user AS us ON ar.user_no = us.no
                  LEFT JOIN section AS se ON se.archive_no = ar.no
                  LEFT JOIN chunk AS ch ON se.no = ch.section_no
+        WHERE ar.privacy_type='public'
         GROUP BY ar.no
         ORDER BY bookmark_count + like_count DESC LIMIT 4
     </select>
@@ -70,17 +71,43 @@
         'category' AS type,
         us.name AS creator_name,
         us.profile AS creator_profile,
-        count(ch.no) AS link_count
+        count(Distinct ch.no) AS link_count,
+        count(Distinct al.no) AS like_count,
+        count(Distinct bo.no) AS bookmark_count,
+        IF(my_al.no, my_al.no, 0) AS like_no,
+        IF(my_bo.no, my_bo.no, 0) AS bookmark_no
         FROM archive AS ar
+        LEFT JOIN archive_like AS al ON al.archive_no = ar.no
+        LEFT JOIN archive_like AS my_al ON my_al.archive_no = ar.no AND my_al.user_no = ${user_no}
+        LEFT JOIN bookmark AS bo ON bo.archive_no = ar.no
+        LEFT JOIN bookmark AS my_bo ON my_bo.archive_no = ar.no AND my_bo.user_no = ${user_no}
         LEFT JOIN user AS us ON ar.user_no = us.no
         LEFT JOIN section AS se ON se.archive_no = ar.no
         LEFT JOIN chunk AS ch ON se.no = ch.section_no
-        WHERE category IN
+        WHERE ar.privacy_type='public' AND category IN
         <foreach item="arr" collection="array" open="(" separator="," close=")">
             #{arr}
         </foreach>
         GROUP BY ar.no
-        ORDER BY no DESC
+        ORDER BY no DESC LIMIT 8
+    </select>
+    <select id="retrieveArchiveOfRandom" resultType="Archive">
+        SELECT ar.*,
+               'category'            AS type,
+               us.name               AS creator_name,
+               us.profile            AS creator_profile,
+               count(Distinct ch.no) AS link_count,
+               0                     AS like_count,
+               0                     AS bookmark_count,
+               0                     AS like_no,
+               0                     AS bookmark_no
+        FROM archive AS ar
+                 LEFT JOIN user AS us ON ar.user_no = us.no
+                 LEFT JOIN section AS se ON se.archive_no = ar.no
+                 LEFT JOIN chunk AS ch ON se.no = ch.section_no
+        WHERE ar.privacy_type = 'public'
+        GROUP BY ar.no
+        ORDER BY rand() LIMIT 8
     </select>
     <select id="retrieveArchiveFromArchiveNo" resultType="Archive">
         select ar.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no, us.name AS creator_name

@@ -150,9 +150,24 @@ public class ArchiveService {
         return result;
     }
 
-    public JSONObject retrieveArchiveOfCategory(List<String> categoryList) {
+    public JSONObject retrieveArchiveOfCategory(List<String> categoryList, int user_no) {
         JSONObject result = new JSONObject();
-        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfCategory(categoryList);
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfCategory(user_no, categoryList);
+
+        for (int i = 0; i < archiveList.size(); i++) {
+            ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
+            archiveList.get(i).setTag_list(tagList);
+        }
+
+        result.put("isSuccess", true);
+        result.put("archive_list", archiveList);
+
+        return result;
+    }
+
+    public JSONObject retrieveArchiveOfRandom() {
+        JSONObject result = new JSONObject();
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfRandom();
 
         for (int i = 0; i < archiveList.size(); i++) {
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());

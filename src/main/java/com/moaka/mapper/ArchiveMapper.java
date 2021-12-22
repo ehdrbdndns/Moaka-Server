@@ -18,7 +18,8 @@ public interface ArchiveMapper {
     ArrayList<Archive> retrieveArchiveOfBookmarkByUserNo(int user_no);
     ArrayList<Archive> retrieveArchiveOfTop(int user_no);
     ArrayList<Archive> retrieveArchiveBySearch(@Param("param") String param, @Param("user_no") int user_no);
-    ArrayList<Archive> retrieveArchiveOfCategory(@Param("array") List<String> categoryList);
+    ArrayList<Archive> retrieveArchiveOfCategory(@Param("user_no") int user_no, @Param("array") List<String> categoryList);
+    ArrayList<Archive> retrieveArchiveOfRandom();
     Archive retrieveArchiveFromArchiveNo(@Param("archive_no") int archive_no, @Param("user_no") int user_no);
     boolean isAuthorityOfDeleteArchive(@Param("archive_no") int archive_no, @Param("user_no") int user_no);
     void deleteArchiveFromArchiveNo(@Param("archive_no") int archive_no);

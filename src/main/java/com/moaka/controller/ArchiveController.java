@@ -109,12 +109,21 @@ public class ArchiveController {
     }
 
     @ApiOperation(value = "아카이브의 관심 카테고리 리스트", notes = "아카이브의 관심 카테고리 리스트")
-    @PostMapping(value = "/user/retrieveArchiveOfCategory", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/retrieveArchiveOfCategory", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> retrieveArchiveOfCategory(@ApiParam(value = "카테고리 리스트", required = true)
                                                             @RequestHeader Map<String, String> headers) {
         try {
-            List<String> categoryList = jwtTokenProvider.getCategoryList(headers.get("bearer"));
-            JSONObject result = archiveService.retrieveArchiveOfCategory(categoryList);
+            int user_no = 0;
+            List<String> categoryList;
+            JSONObject result;
+            if(!headers.get("bearer").equals("null")) {
+                user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+                categoryList = jwtTokenProvider.getCategoryList(headers.get("bearer"));
+                result = archiveService.retrieveArchiveOfCategory(categoryList, user_no);
+            } else {
+                result = archiveService.retrieveArchiveOfRandom();
+            }
+
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
