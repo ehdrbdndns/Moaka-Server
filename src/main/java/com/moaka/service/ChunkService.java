@@ -32,16 +32,11 @@ public class ChunkService {
 
     public JSONObject insertChunk(Chunk chunk) throws Exception {
         JSONObject result = new JSONObject();
-        // TODO 해상 섹션에 대한 권한이 있는지 체크
-        if (chunkMapper.isAuthorityOfInsertChunk(chunk.getSection_no(), chunk.getUser_no())) {
-            chunk.setRegdate(getToday());
-            chunkMapper.insertChunk(chunk);
+        chunk.setRegdate(getToday());
+        chunkMapper.insertChunk(chunk);
 
-            result.put("isSuccess", true);
-            result.put("no", chunk.getNo());
-        } else {
-            result.put("isSuccess", false);
-        }
+        result.put("isSuccess", true);
+        result.put("no", chunk.getNo());
 
         return result;
     }
@@ -134,6 +129,10 @@ public class ChunkService {
         String thumbnail = "";
         String favicon = "";
 
+        if (!domain.startsWith("www")) {
+            domain = domain;
+        }
+
         description = getMetaTagContent(document, "meta[name=description]");
         if (description.equals("")) {
             description = getMetaTagContent(document, "meta[property=og:description]");
@@ -156,8 +155,13 @@ public class ChunkService {
         } else if (document.head().select("meta[itemprop=image]").first() != null) {
             favicon = document.head().select("meta[itemprop=image]").first().attr("content");
         }
+
         if (!favicon.startsWith("http")) {
-            favicon = "http://" + domain + favicon;
+            if (domain.startsWith("www")) {
+                favicon = "http://" + domain + favicon;
+            } else {
+                favicon = "http://www." + domain + favicon;
+            }
         }
 
         JSONObject result = new JSONObject();
