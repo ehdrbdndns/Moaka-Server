@@ -11,8 +11,8 @@
         values (#{tag}, ${chunk_no}, 'chunk', #{regdate})
     </insert>
     <insert id="insertArchiveTag">
-        insert into tag(tag, archive_no, store_type, regdate)
-        values (#{tag}, ${archive_no}, 'archive', #{regdate})
+        insert into tag(tag, archive_no, regdate)
+        values (#{tag}, ${archive_no}, #{regdate})
     </insert>
 
     <select id="retrieveArchiveTagByArchiveNo" resultType="String">

@@ -30,9 +30,11 @@ public class ArchiveService {
         String today = getToday();
 
         // CDN 썸네일 생성
-        String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
+        if (params.getThumbnailFile() != null) {
+            String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
+            params.setThumbnail(thumbnailUrl);
+        }
         params.setRegdate(today);
-        params.setThumbnail(thumbnailUrl);
 
         // DB 아카이브 정보 생성
         archiveMapper.insertArchive(params);
@@ -139,11 +141,15 @@ public class ArchiveService {
         archiveObj.put("description", archive.getDescription());
         archiveObj.put("thumbnail", archive.getThumbnail());
         archiveObj.put("creator_name", archive.getCreator_name());
+        archiveObj.put("creator_profile", archive.getCreator_profile());
         archiveObj.put("privacy_type", archive.getPrivacy_type());
         archiveObj.put("regdate", archive.getRegdate());
         archiveObj.put("tag_list", archive.getTag_list());
         archiveObj.put("bookmark_no", archive.getBookmark_no());
         archiveObj.put("like_no", archive.getLike_no());
+        archiveObj.put("like_count", archive.getLike_count());
+        archiveObj.put("link_count", archive.getLink_count());
+        archiveObj.put("bookmark_count", archive.getBookmark_count());
         archiveObj.put("category", archive.getCategory());
 
         result.put("archive", archiveObj);

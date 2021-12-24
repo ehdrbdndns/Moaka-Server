@@ -139,7 +139,7 @@ public class ArchiveController {
     @ApiOperation(value = "아카이브 생성", notes = "아카이브를 생성합니다.")
     @PostMapping(value = "/user/insertArchive", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> insertArchive(
-            @RequestPart(value = "thumbnailFile") MultipartFile thumbnailFile,
+            @RequestPart(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
             @RequestPart(value = "archive") Archive params,
             @RequestHeader Map<String, String> headers) {
         try {
