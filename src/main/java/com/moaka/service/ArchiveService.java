@@ -2,9 +2,13 @@ package com.moaka.service;
 
 import com.moaka.common.cdn.S3Uploader;
 import com.moaka.dto.Archive;
+import com.moaka.dto.Section;
 import com.moaka.dto.Tag;
+import com.moaka.dto.User;
 import com.moaka.mapper.ArchiveMapper;
+import com.moaka.mapper.SectionMapper;
 import com.moaka.mapper.TagMapper;
+import com.moaka.mapper.UserMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +26,11 @@ public class ArchiveService {
     @Autowired
     ArchiveMapper archiveMapper;
     @Autowired
+    SectionMapper sectionMapper;
+    @Autowired
     TagMapper tagMapper;
+    @Autowired
+    UserMapper userMapper;
     @Autowired
     S3Uploader s3Uploader;
 
@@ -54,13 +62,20 @@ public class ArchiveService {
 
             tagMapper.insertArchiveTag(tag);
         }
+
+        // 섹션 생성
+        Section sectionInfo = new Section();
+        sectionInfo.setTitle("저장소");
+        sectionInfo.setDescription("기본 저장소입니다.");
+        sectionInfo.setArchive_no(params.getNo());
+        sectionInfo.setRegdate(today);
+        sectionMapper.insertSection(sectionInfo);
     }
 
     public JSONObject updateArchive(Archive params) throws IOException {
         JSONObject result = new JSONObject();
 
         if (params.getThumbnailFile() != null) {
-            s3Uploader.delete(params.getThumbnail().split("https://moaka-s3.s3.ap-northeast-2.amazonaws.com/")[1]);
             String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
             params.setThumbnail(thumbnailUrl);
         }
@@ -133,6 +148,7 @@ public class ArchiveService {
         JSONObject result = new JSONObject();
         Archive archive = archiveMapper.retrieveArchiveFromArchiveNo(archive_no, user_no);
         ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archive.getNo());
+        ArrayList<User> userList = userMapper.retrieveGroupUserOfArchiveByArchiveNo(archive.getNo());
         archive.setTag_list(tagList);
 
         archiveObj.put("no", archive.getNo());
@@ -151,6 +167,7 @@ public class ArchiveService {
         archiveObj.put("link_count", archive.getLink_count());
         archiveObj.put("bookmark_count", archive.getBookmark_count());
         archiveObj.put("category", archive.getCategory());
+        archiveObj.put("user_list", userList);
 
         result.put("archive", archiveObj);
         return result;

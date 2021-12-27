@@ -53,32 +53,14 @@ public class SectionService {
         for(int i = 0; i < sectionList.size(); i++) {
             JSONObject sectionInfo = new JSONObject();
             Section section = sectionList.get(i);
-            // TODO 섹션 태그 추출
-            ArrayList<String> sectionTagList = tagMapper.retrieveSectionTagBySectionNo(section.getNo());
             // TODO 섹션의 청크 리스트 추출
             ArrayList<Chunk> chunkList = chunkMapper.retrieveMainChunkBySectionNo(section.getNo(), user_no);
-
-            for(int j = 0; j < chunkList.size(); j++) {
-                // TODO 청크의 태그 리스트
-                ArrayList<String> chunkTagList = tagMapper.retrieveChunkTagByChunkNo(chunkList.get(j).getNo());
-                chunkList.get(j).setTag_list(chunkTagList);
-
-                // TODO 청크의 관련 청크
-                ArrayList<Chunk> relativeChunkList = chunkMapper.retrieveRelativeChunkByGroupNum(chunkList.get(j).getNo());
-                chunkList.get(j).setRelative_chunk_list(relativeChunkList);
-
-                // TODO 청크의 댓글
-                ArrayList<Comment> commentList = commentMapper.selectCommentOfChunk(chunkList.get(j).getNo());
-                chunkList.get(j).setComment_list(commentList);
-            }
 
             // TODO JSON 데이터 생성
             sectionInfo.put("no", section.getNo());
             sectionInfo.put("title", section.getTitle());
             sectionInfo.put("archive_no", section.getArchive_no());
-            sectionInfo.put("description", section.getDescription());
             sectionInfo.put("regdate", section.getRegdate());
-            sectionInfo.put("tag_list", sectionTagList);
             sectionInfo.put("chunk_list", chunkList);
             result.put(sectionInfo);
         }

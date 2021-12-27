@@ -3,12 +3,10 @@
 
 <mapper namespace="com.moaka.mapper.ChunkMapper">
     <select id="retrieveMainChunkBySectionNo" resultType="Chunk">
-        select ch.*, IF(bo.no, bo.no, 0) AS bookmark_no, IF(li.no, li.no, 0) AS like_no
+        select ch.*, IF(li.no, li.no, 0) AS like_no
         from chunk AS ch
-                 LEFT JOIN bookmark AS bo ON ch.no = bo.chunk_no AND bo.user_no = ${user_no}
                  LEFT JOIN chunk_like as li ON ch.no = li.chunk_no AND li.user_no = ${user_no}
         where ch.section_no = ${section_no}
-          AND ch.layer = 0
         ORDER BY no DESC
     </select>
     <select id="retrieveRelativeChunkByGroupNum" resultType="Chunk">

@@ -50,6 +50,6 @@
     </delete>
 
     <delete id="deleteArchiveTagByArchiveNo">
-        DELETE FROM tag WHERE store_type = 'archive' AND archive_no=${archive_no}
+        DELETE FROM tag WHERE archive_no=${archive_no}
     </delete>
 </mapper>
