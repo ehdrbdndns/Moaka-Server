@@ -28,6 +28,10 @@ public class Chunk {
     private String favicon;
     @ApiParam(value = "link 도메인")
     private String domain;
+    @ApiParam(value = "채팅방 번호")
+    private String room_id;
+    @ApiParam(value = "채팅 개수")
+    private String chat_count;
 
     // TODO 구버전
     @ApiParam(value = "URL 제목", required = false)

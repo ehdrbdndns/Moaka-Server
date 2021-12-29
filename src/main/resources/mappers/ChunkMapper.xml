@@ -3,10 +3,12 @@
 
 <mapper namespace="com.moaka.mapper.ChunkMapper">
     <select id="retrieveMainChunkBySectionNo" resultType="Chunk">
-        select ch.*, IF(my_cl.no, my_cl.no, 0) AS like_no, count(Distinct cl.no) AS like_count
+        select ch.*, IF(my_cl.no, my_cl.no, 0) AS like_no, count(Distinct cl.no) AS like_count, count(distinct chat.no) AS chat_count, ro.room_id AS room_id
         from chunk AS ch
                  LEFT JOIN chunk_like as cl ON ch.no = cl.chunk_no
                  LEFT JOIN chunk_like as my_cl ON ch.no = my_cl.chunk_no AND my_cl.user_no = ${user_no}
+                 LEFT JOIN room as ro ON ro.chunk_no = ch.no
+                 LEFT JOIN chat as chat ON chat.room_no = ro.no
         where ch.section_no = ${section_no}
         GROUP BY ch.no
         ORDER BY no DESC
