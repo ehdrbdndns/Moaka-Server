@@ -16,8 +16,8 @@ public class ChatService {
     @Autowired
     ChatMapper chatMapper;
 
-    public ArrayList<Chat> retrieveChatByRoomNo(int room_no) {
-        return chatMapper.retrieveChatByRoomNo(room_no);
+    public ArrayList<Chat> retrieveChatByRoomNo(int room_no, int user_no) {
+        return chatMapper.retrieveChatByRoomNo(room_no, user_no);
     }
 
     @Async

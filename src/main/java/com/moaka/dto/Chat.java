@@ -14,4 +14,10 @@ public class Chat {
 
     private String user_name;
     private String user_profile;
+
+    private int like_count;
+    private int like_no;
+
+    // websocket type
+    private String type; // like, message
 }

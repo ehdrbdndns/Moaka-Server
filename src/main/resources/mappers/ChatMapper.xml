@@ -3,12 +3,20 @@
 
 <mapper namespace="com.moaka.mapper.ChatMapper">
     <select id="retrieveChatByRoomNo" resultType="Chat">
-        SELECT ch.*, us.name AS user_name, us.profile AS user_profile
+        SELECT ch.*,
+               us.name                   AS user_name,
+               us.profile                AS user_profile,
+               count(Distinct cl.no)     AS like_count,
+               IF(my_cl.no, my_cl.no, 0) AS like_no
         FROM chat AS ch
                  LEFT JOIN user AS us ON us.no = ch.user_no
+                 LEFT JOIN chat_like AS cl ON cl.chat_no = ch.no
+                 LEFT JOIN chat_like AS my_cl ON my_cl.chat_no = ch.no AND my_cl.user_no = ${user_no}
         WHERE room_no = ${room_no}
+        GROUP BY ch.no
     </select>
     <insert id="insertChat">
-        INSERT INTO chat(content, room_no, user_no, regdate) VALUES(#{content}, ${room_no}, ${user_no}, #{regdate})
+        INSERT INTO chat(content, room_no, user_no, regdate)
+        VALUES (#{content}, ${room_no}, ${user_no}, #{regdate})
     </insert>
 </mapper>

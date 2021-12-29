@@ -1,5 +1,6 @@
 package com.moaka.controller;
 
+import com.moaka.common.config.security.JwtTokenProvider;
 import com.moaka.common.exception.ErrorCode;
 import com.moaka.common.exception.InternalServiceException;
 import com.moaka.common.exception.NotFoundException;
@@ -24,13 +25,21 @@ public class ChatController {
     @Autowired
     ChatService chatService;
 
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @ApiOperation(value = "채팅 정보 가져오기", notes = "채팅 정보 가져오기")
     @PostMapping(value = "/retrieveChatByRoomNo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> retrieveChatByRoomNo( @ApiParam(value = "아카이브 번호", required = true)
-                                                            @RequestParam("roomNo") int roomNo) {
+                                                            @RequestParam("roomNo") int roomNo,
+                                                        @RequestHeader Map<String, String> headers) {
         try {
             JSONObject result = new JSONObject();
-            result.put("chat_list", chatService.retrieveChatByRoomNo(roomNo));
+            int user_no = 0;
+            if (jwtTokenProvider.validateToken(headers.get("bearer"))) {
+                user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            }
+            result.put("chat_list", chatService.retrieveChatByRoomNo(roomNo, user_no));
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
