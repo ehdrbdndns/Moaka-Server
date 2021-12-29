@@ -66,7 +66,6 @@ public class ArchiveService {
         // 섹션 생성
         Section sectionInfo = new Section();
         sectionInfo.setTitle("저장소");
-        sectionInfo.setDescription("기본 저장소입니다.");
         sectionInfo.setArchive_no(params.getNo());
         sectionInfo.setRegdate(today);
         sectionMapper.insertSection(sectionInfo);

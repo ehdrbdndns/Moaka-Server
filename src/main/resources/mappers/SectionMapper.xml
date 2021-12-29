@@ -7,7 +7,7 @@
     </select>
 
     <insert id="insertSection">
-        insert into section(title, description, archive_no,  regdate) value (#{title}, #{description}, ${archive_no}, #{regdate})
+        insert into section(title, archive_no,  regdate) value (#{title}, ${archive_no}, #{regdate})
         <selectKey keyProperty="no" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>

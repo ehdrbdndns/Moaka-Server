@@ -1,11 +1,9 @@
 package com.moaka.service;
 
 import com.moaka.dto.Chunk;
-import com.moaka.dto.Comment;
-import com.moaka.dto.Tag;
-import com.moaka.mapper.BookmarkMapper;
+import com.moaka.dto.Room;
 import com.moaka.mapper.ChunkMapper;
-import com.moaka.mapper.CommentMapper;
+import com.moaka.mapper.RoomMapper;
 import com.moaka.mapper.TagMapper;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -19,6 +17,7 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -28,12 +27,21 @@ public class ChunkService {
     @Autowired
     TagMapper tagMapper;
     @Autowired
-    CommentMapper commentMapper;
+    RoomMapper roomMapper;
 
     public JSONObject insertChunk(Chunk chunk) throws Exception {
         JSONObject result = new JSONObject();
         chunk.setRegdate(getToday());
+
+        // 청크 생성
         chunkMapper.insertChunk(chunk);
+
+        // 청크의 채팅 창 생성
+        Room room = new Room();
+        room.setChunk_no(chunk.getNo());
+        room.setRoom_id(UUID.randomUUID().toString());
+        room.setRegdate(getToday());
+        roomMapper.insertRoom(room);
 
         result.put("isSuccess", true);
         result.put("no", chunk.getNo());
@@ -71,8 +79,8 @@ public class ChunkService {
             chunkList.get(i).setTag_list(chunkTagList);
 
             // TODO 댓글 리스트
-            ArrayList<Comment> commentList = commentMapper.selectCommentOfChunk(chunkList.get(i).getNo());
-            chunkList.get(i).setComment_list(commentList);
+//            ArrayList<Comment> commentList = commentMapper.selectCommentOfChunk(chunkList.get(i).getNo());
+//            chunkList.get(i).setComment_list(commentList);
 
             // TODO 관련 청크 리스트
             ArrayList<Chunk> relativeChunkList = chunkMapper.retrieveRelativeChunkByGroupNum(chunkList.get(i).getNo());
@@ -85,13 +93,9 @@ public class ChunkService {
     }
 
     public boolean updateChunk(Chunk params) throws Exception {
-        if (chunkMapper.isAuthorityOfUpdateChunk(params.getNo(), params.getUser_no())) {
-            chunkMapper.updateChunk(params);
-
-            return true;
-        } else {
-            return false;
-        }
+        System.out.println(params.toString());
+        chunkMapper.updateChunk(params);
+        return true;
     }
 
     public boolean updateChunkFromChrome(Chunk params) throws Exception {

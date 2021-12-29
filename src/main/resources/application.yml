@@ -1,8 +1,18 @@
+#RabbitMQ
+spring:
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672
+
+---
+
 # DB
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://moaka-db.ctldqhksk1xl.ap-northeast-2.rds.amazonaws.com:3306/moaka?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://moaka-db.ctldqhksk1xl.ap-northeast-2.rds.amazonaws.com:3306/moaka?serverTimezone=UTC&useUnicode=true
     username: moaka
     password: moaka1234
 

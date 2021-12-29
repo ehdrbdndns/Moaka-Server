@@ -1,7 +1,6 @@
 package com.moaka.service;
 
 import com.moaka.dto.Chunk;
-import com.moaka.dto.Comment;
 import com.moaka.dto.Section;
 import com.moaka.dto.Tag;
 import com.moaka.mapper.*;
@@ -28,9 +27,6 @@ public class SectionService {
 
     @Autowired
     ChunkMapper chunkMapper;
-
-    @Autowired
-    CommentMapper commentMapper;
 
     public void updateSection(Section params) throws Exception {
         sectionMapper.updateSection(params);
