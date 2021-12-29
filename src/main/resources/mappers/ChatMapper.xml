@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moaka.mapper.ChatMapper">
+    <select id="retrieveChatByRoomNo" resultType="Chat">
+        SELECT ch.*, us.name AS user_name, us.profile AS user_profile
+        FROM chat AS ch
+                 LEFT JOIN user AS us ON us.no = ch.user_no
+        WHERE room_no = ${room_no}
+    </select>
+    <insert id="insertChat">
+        INSERT INTO chat(content, room_no, user_no, regdate) VALUES(#{content}, ${room_no}, ${user_no}, #{regdate})
+    </insert>
+</mapper>

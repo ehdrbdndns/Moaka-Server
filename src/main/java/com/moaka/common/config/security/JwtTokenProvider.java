@@ -65,8 +65,8 @@ public class JwtTokenProvider {
 
     // 토큰에서 회원 정보 추출
     public String getUserPk(String token) {
-        System.out.println("toeken body");
-        System.out.println(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody());
+//        System.out.println("toeken body");
+//        System.out.println(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody());
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -102,7 +102,7 @@ public class JwtTokenProvider {
 
     // Request의 Header에서 token 값을 가져옵니다. "Bearer" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
-        System.out.println("토큰 확인 중...");
+//        System.out.println("토큰 확인 중...");
         return request.getHeader("Bearer");
     }
 

@@ -30,6 +30,8 @@ public class Chunk {
     private String domain;
     @ApiParam(value = "채팅방 번호")
     private String room_id;
+    @ApiParam(value = "채팅방 고유 번호")
+    private int room_no;
     @ApiParam(value = "채팅 개수")
     private String chat_count;
 

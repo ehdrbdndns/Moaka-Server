@@ -11,4 +11,7 @@ public class Chat {
     private int room_no;
     private int user_no;
     private String regdate;
+
+    private String user_name;
+    private String user_profile;
 }
