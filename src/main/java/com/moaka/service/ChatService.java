@@ -20,7 +20,6 @@ public class ChatService {
         return chatMapper.retrieveChatByRoomNo(room_no, user_no);
     }
 
-    @Async
     public void insertChat(Chat chat) {
         chatMapper.insertChat(chat);
     }

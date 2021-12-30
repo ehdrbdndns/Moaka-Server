@@ -1,7 +1,10 @@
 package com.moaka.controller;
 
+import com.moaka.dto.Alarm;
 import com.moaka.dto.Chat;
+import com.moaka.mapper.AlarmMapper;
 import com.moaka.mapper.LikeMapper;
+import com.moaka.service.AlarmService;
 import com.moaka.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +29,9 @@ public class ChatRoomController {
 
     @Autowired
     LikeMapper likeMapper;
+
+    @Autowired
+    AlarmService alarmService;
 
     private final RabbitTemplate template;
 
@@ -56,10 +62,16 @@ public class ChatRoomController {
         chat.setRegdate(getToday());
 
         likeMapper.insertChatLike(chat);
-        System.out.println("like_no");
-        System.out.println(chat.getLike_no());
 
         template.convertAndSend("amq.topic", "room." + chatRoomId, chat);
+    }
+
+    @MessageMapping("chat.alarm.{user_no}")
+    public void insertAlarm(Alarm alarm, @DestinationVariable int user_no) {
+        alarm.setRegdate(getTodayDate());
+        
+        alarmService.insertAlarm(alarm);
+        template.convertAndSend("amq.topic", "room.user_no" + user_no, alarm);
     }
 
     //receive()는 단순히 큐에 들어온 메세지를 소비만 한다. (현재는 디버그용도)

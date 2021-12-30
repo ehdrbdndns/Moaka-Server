@@ -18,5 +18,8 @@
     <insert id="insertChat">
         INSERT INTO chat(content, room_no, user_no, regdate)
         VALUES (#{content}, ${room_no}, ${user_no}, #{regdate})
+        <selectKey keyProperty="no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 </mapper>
