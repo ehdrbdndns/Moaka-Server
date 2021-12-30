@@ -89,4 +89,23 @@ public class UserService {
         result.put("user_list", userList);
         return result;
     }
+
+    public JSONObject searchUser(String id) {
+        JSONObject result = new JSONObject();
+        JSONObject userJson = new JSONObject();
+        User user = userMapper.retrieveUserById(id);
+
+        if(user != null) {
+            userJson.put("no", user.getNo());
+            userJson.put("id", user.getId());
+            userJson.put("name", user.getName());
+            userJson.put("profile", user.getProfile());
+            result.put("isSuccess", true);
+            result.put("user", userJson);
+        } else {
+            result.put("isSuccess", false);
+        }
+
+        return result;
+    }
 }

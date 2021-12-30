@@ -25,4 +25,8 @@
     <update id="changeUserPwdByEmail">
         update user set pwd = #{pwd} where id=#{email}
     </update>
+
+    <delete id="deleteUserByNo">
+        delete from user where no=${userNo}
+    </delete>
 </mapper>

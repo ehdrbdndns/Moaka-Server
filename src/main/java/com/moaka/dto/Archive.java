@@ -16,11 +16,21 @@ public class Archive {
     private String thumbnail;
     private MultipartFile thumbnailFile;
     private String privacy_type;
+    private String regdate;
     // 생성자 이름
     private String creator_name;
+    private String creator_profile;
     // 생성자 고유번호
     private int user_no;
-    private String regdate;
+
+    // 링크 개수
+    private int link_count;
+
+    // 좋아요 개수
+    private int like_count;
+
+    // 북마크 개수
+    private int bookmark_count;
 
     private int bookmark_no;
     private int like_no;

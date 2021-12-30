@@ -1,10 +1,10 @@
 package com.moaka.service;
 
-import com.moaka.dto.Bookmark;
+import com.moaka.dto.Chat;
 import com.moaka.dto.Like;
-import com.moaka.mapper.BookmarkMapper;
 import com.moaka.mapper.LikeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +35,15 @@ public class LikeService {
 
     public void deleteChunkLike(int no) {
         likeMapper.deleteChunkLike(no);
+    }
+
+    public void insertChatLike(Chat chat) {
+        likeMapper.insertChatLike(chat);
+    }
+
+    @Async
+    public void deleteChatLike(int user_no) {
+        likeMapper.deleteChatLike(user_no);
     }
 
     public String getToday() {

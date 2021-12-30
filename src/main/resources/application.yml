@@ -1,8 +1,23 @@
+#RabbitMQ
+spring:
+  rabbitmq:
+    host: b-1ba63895-34ee-4734-82b1-bbe784966c61.mq.ap-northeast-2.amazonaws.com
+    port: 5671
+    username: moaka
+    password: moaka2021!zz
+    ssl:
+      enabled: true
+    listener:
+        simple:
+          acknowledge-mode: manual
+
+---
+
 # DB
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://moaka-db.ctldqhksk1xl.ap-northeast-2.rds.amazonaws.com:3306/moaka?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://moaka-db.ctldqhksk1xl.ap-northeast-2.rds.amazonaws.com:3306/moaka?serverTimezone=UTC&useUnicode=true
     username: moaka
     password: moaka1234
 

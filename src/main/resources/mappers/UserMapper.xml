@@ -51,7 +51,7 @@
     </delete>
 
     <select id="retrieveGroupUserOfArchiveByArchiveNo" resultType="User">
-        SELECT us.*
+        SELECT us.no, us.id, us.name, us.profile
         FROM archive_group AS ag
                  LEFT JOIN user AS us
                            ON ag.user_no = us.no

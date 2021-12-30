@@ -1,16 +1,15 @@
 package com.moaka.dto;
 
-import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import lombok.ToString;
 
-import java.util.ArrayList;
-
 @Data
 @ToString
-public class Bookmark {
+public class Alarm {
     private int no;
     private int user_no;
-    private int archive_no;
+    private String content;
+    private String send_name;
+    private String send_profile;
     private String regdate;
 }
