@@ -119,7 +119,7 @@
             #{arr}
         </foreach>
         GROUP BY ar.no
-        ORDER BY no DESC LIMIT 8
+        ORDER BY no DESC LIMIT 30
     </select>
     <select id="retrieveArchiveOfRandom" resultType="Archive">
         SELECT ar.*,

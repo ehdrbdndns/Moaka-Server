@@ -5,7 +5,9 @@
     <select id="retrieveAlarmByUserNo" resultType="Alarm">
         SELECT *
         FROM alarm
-        where user_no = ${user_no} LIMIT 20
+        WHERE user_no = ${user_no}
+        ORDER BY no DESC
+            LIMIT 20
     </select>
     <select id="insertAlarm" resultType="Integer">
         INSERT INTO alarm(user_no, content, regdate, send_name, send_profile)
