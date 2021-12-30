@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moaka.mapper.AlarmMapper">
+    <select id="retrieveAlarmByUserNo" resultType="Alarm">
+        SELECT *
+        FROM alarm
+        WHERE user_no = ${user_no}
+        ORDER BY no DESC
+            LIMIT 20
+    </select>
+    <select id="insertAlarm" resultType="Integer">
+        INSERT INTO alarm(user_no, content, regdate, send_name, send_profile)
+        VALUES (${user_no}, #{content}, #{regdate}, #{send_name}, #{send_profile});
+    </select>
+</mapper>

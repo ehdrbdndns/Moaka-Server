@@ -28,6 +28,19 @@ public class UserController {
     UserService userService;
 
     @ApiOperation(value = "개인 디렉토리 찾기", notes = "사용자의 개인 아카이브를 검색합니다.")
+    @PostMapping(value = "/searchUser", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> searchUser(@ApiParam(value = "id", required = true, example = "test@naver.com")
+                                                         @RequestParam(value = "id") String id) {
+        try {
+            JSONObject result = userService.searchUser(id);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "개인 디렉토리 찾기", notes = "사용자의 개인 아카이브를 검색합니다.")
     @PostMapping(value = "/retrieveLocalDirectory", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> retrieveLocalDirectory(@ApiParam(value = "user_no", required = true, example = "4")
                                                          @RequestParam(value = "user_no") int user_no) {

@@ -26,4 +26,17 @@
         FROM chunk_like
         WHERE no = ${no}
     </delete>
+
+    <insert id="insertChatLike">
+        INSERT INTO chat_like(user_no, chat_no, regdate)
+        VALUES (${user_no}, ${no}, #{regdate})
+        <selectKey keyProperty="like_no" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <delete id="deleteChatLike">
+        DELETE
+        FROM chat_like
+        WHERE no = ${like_no}
+    </delete>
 </mapper>

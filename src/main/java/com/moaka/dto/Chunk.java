@@ -28,6 +28,12 @@ public class Chunk {
     private String favicon;
     @ApiParam(value = "link 도메인")
     private String domain;
+    @ApiParam(value = "채팅방 번호")
+    private String room_id;
+    @ApiParam(value = "채팅방 고유 번호")
+    private int room_no;
+    @ApiParam(value = "채팅 개수")
+    private String chat_count;
 
     // TODO 구버전
     @ApiParam(value = "URL 제목", required = false)
@@ -47,10 +53,6 @@ public class Chunk {
     private ArrayList<Chunk> relative_chunk_list;
     private boolean relative_chunk_loading = false;
 
-    // 청크의 댓글 리스트
-    private ArrayList<Comment> comment_list;
-    private boolean comment_loading = false;
-
     // 청크의 태그 리스트
     private ArrayList<String> tag_list;
 
@@ -60,6 +62,7 @@ public class Chunk {
 
     // 청크 좋아요
     private int like_no;
+    private int like_count;
     private boolean chunk_loading = false;
 
     private ArrayList<Chunk> chunk_list;

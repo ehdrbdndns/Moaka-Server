@@ -2,9 +2,13 @@ package com.moaka.service;
 
 import com.moaka.common.cdn.S3Uploader;
 import com.moaka.dto.Archive;
+import com.moaka.dto.Section;
 import com.moaka.dto.Tag;
+import com.moaka.dto.User;
 import com.moaka.mapper.ArchiveMapper;
+import com.moaka.mapper.SectionMapper;
 import com.moaka.mapper.TagMapper;
+import com.moaka.mapper.UserMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +26,11 @@ public class ArchiveService {
     @Autowired
     ArchiveMapper archiveMapper;
     @Autowired
+    SectionMapper sectionMapper;
+    @Autowired
     TagMapper tagMapper;
+    @Autowired
+    UserMapper userMapper;
     @Autowired
     S3Uploader s3Uploader;
 
@@ -30,9 +38,11 @@ public class ArchiveService {
         String today = getToday();
 
         // CDN 썸네일 생성
-        String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
+        if (params.getThumbnailFile() != null) {
+            String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
+            params.setThumbnail(thumbnailUrl);
+        }
         params.setRegdate(today);
-        params.setThumbnail(thumbnailUrl);
 
         // DB 아카이브 정보 생성
         archiveMapper.insertArchive(params);
@@ -52,13 +62,19 @@ public class ArchiveService {
 
             tagMapper.insertArchiveTag(tag);
         }
+
+        // 섹션 생성
+        Section sectionInfo = new Section();
+        sectionInfo.setTitle("저장소");
+        sectionInfo.setArchive_no(params.getNo());
+        sectionInfo.setRegdate(today);
+        sectionMapper.insertSection(sectionInfo);
     }
 
     public JSONObject updateArchive(Archive params) throws IOException {
         JSONObject result = new JSONObject();
 
         if (params.getThumbnailFile() != null) {
-            s3Uploader.delete(params.getThumbnail().split("https://moaka-s3.s3.ap-northeast-2.amazonaws.com/")[1]);
             String thumbnailUrl = s3Uploader.upload(params.getThumbnailFile(), "archive/thumbnail");
             params.setThumbnail(thumbnailUrl);
         }
@@ -114,9 +130,9 @@ public class ArchiveService {
         return result;
     }
 
-    public JSONObject retrieveArchiveOfTop() {
+    public JSONObject retrieveArchiveOfTop(int user_no) {
         JSONObject result = new JSONObject();
-        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfTop();
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfTop(user_no);
         for (int i = 0; i < archiveList.size(); i++) {
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
             archiveList.get(i).setTag_list(tagList);
@@ -131,6 +147,7 @@ public class ArchiveService {
         JSONObject result = new JSONObject();
         Archive archive = archiveMapper.retrieveArchiveFromArchiveNo(archive_no, user_no);
         ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archive.getNo());
+        ArrayList<User> userList = userMapper.retrieveGroupUserOfArchiveByArchiveNo(archive.getNo());
         archive.setTag_list(tagList);
 
         archiveObj.put("no", archive.getNo());
@@ -139,20 +156,40 @@ public class ArchiveService {
         archiveObj.put("description", archive.getDescription());
         archiveObj.put("thumbnail", archive.getThumbnail());
         archiveObj.put("creator_name", archive.getCreator_name());
+        archiveObj.put("creator_profile", archive.getCreator_profile());
         archiveObj.put("privacy_type", archive.getPrivacy_type());
         archiveObj.put("regdate", archive.getRegdate());
         archiveObj.put("tag_list", archive.getTag_list());
         archiveObj.put("bookmark_no", archive.getBookmark_no());
         archiveObj.put("like_no", archive.getLike_no());
+        archiveObj.put("like_count", archive.getLike_count());
+        archiveObj.put("link_count", archive.getLink_count());
+        archiveObj.put("bookmark_count", archive.getBookmark_count());
         archiveObj.put("category", archive.getCategory());
+        archiveObj.put("user_list", userList);
 
         result.put("archive", archiveObj);
         return result;
     }
 
-    public JSONObject retrieveArchiveOfCategory(List<String> categoryList) {
+    public JSONObject retrieveArchiveOfCategory(List<String> categoryList, int user_no) {
         JSONObject result = new JSONObject();
-        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfCategory(categoryList);
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfCategory(user_no, categoryList);
+
+        for (int i = 0; i < archiveList.size(); i++) {
+            ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());
+            archiveList.get(i).setTag_list(tagList);
+        }
+
+        result.put("isSuccess", true);
+        result.put("archive_list", archiveList);
+
+        return result;
+    }
+
+    public JSONObject retrieveArchiveOfRandom() {
+        JSONObject result = new JSONObject();
+        ArrayList<Archive> archiveList = archiveMapper.retrieveArchiveOfRandom();
 
         for (int i = 0; i < archiveList.size(); i++) {
             ArrayList<String> tagList = tagMapper.retrieveArchiveTagByArchiveNo(archiveList.get(i).getNo());

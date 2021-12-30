@@ -24,8 +24,8 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         JwtUser users = userMapper.retrieveJwtUserById(id);
         if(users != null && users.getUsername().equals(id)) {
-            System.out.println("**************Found user***************");
-            System.out.println("id : " + users.getUsername());
+//            System.out.println("**************Found user***************");
+//            System.out.println("id : " + users.getUsername());
             users.setRoles(Collections.singletonList("ROLE_USER"));
             return users;
         } else {

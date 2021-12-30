@@ -8,6 +8,7 @@ import com.moaka.dto.Section;
 import com.moaka.service.ArchiveService;
 import com.moaka.service.SectionService;
 import com.moaka.service.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -62,9 +63,40 @@ public class ArchiveController {
 
     @ApiOperation(value = "상위 아카이브 리스트 검색", notes = "상위 아카이브를 검색합니다.")
     @PostMapping(value = "/retrieveArchiveOfTop", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> retrieveArchiveOfTop() {
+    public ResponseEntity<String> retrieveArchiveOfTop(@RequestHeader Map<String, String> headers) {
+        JSONObject result;
         try {
-            JSONObject result = archiveService.retrieveArchiveOfTop();
+            int user_no = 0;
+            if (jwtTokenProvider.validateToken(headers.get("bearer"))) {
+                user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+            }
+            result = archiveService.retrieveArchiveOfTop(user_no);
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
+        }
+    }
+
+    @ApiOperation(value = "아카이브의 관심 카테고리 리스트", notes = "아카이브의 관심 카테고리 리스트")
+    @PostMapping(value = "/retrieveArchiveOfCategory", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> retrieveArchiveOfCategory(@ApiParam(value = "카테고리 리스트", required = true)
+                                                            @RequestHeader Map<String, String> headers) {
+        JSONObject result;
+        try {
+            int user_no = 0;
+            List<String> categoryList;
+            if (jwtTokenProvider.validateToken(headers.get("bearer"))) {
+                user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
+                categoryList = jwtTokenProvider.getCategoryList(headers.get("bearer"));
+                result = archiveService.retrieveArchiveOfCategory(categoryList, user_no);
+            } else {
+                result = archiveService.retrieveArchiveOfRandom();
+            }
+
+            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
+        } catch (ExpiredJwtException e) {
+            result = archiveService.retrieveArchiveOfRandom();
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,24 +136,10 @@ public class ArchiveController {
         }
     }
 
-    @ApiOperation(value = "아카이브의 관심 카테고리 리스트", notes = "아카이브의 관심 카테고리 리스트")
-    @PostMapping(value = "/user/retrieveArchiveOfCategory", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> retrieveArchiveOfCategory(@ApiParam(value = "카테고리 리스트", required = true)
-                                                            @RequestHeader Map<String, String> headers) {
-        try {
-            List<String> categoryList = jwtTokenProvider.getCategoryList(headers.get("bearer"));
-            JSONObject result = archiveService.retrieveArchiveOfCategory(categoryList);
-            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
-        }
-    }
-
     @ApiOperation(value = "아카이브 생성", notes = "아카이브를 생성합니다.")
     @PostMapping(value = "/user/insertArchive", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> insertArchive(
-            @RequestPart(value = "thumbnailFile") MultipartFile thumbnailFile,
+            @RequestPart(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
             @RequestPart(value = "archive") Archive params,
             @RequestHeader Map<String, String> headers) {
         try {
