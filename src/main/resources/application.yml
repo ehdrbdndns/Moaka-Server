@@ -1,15 +1,16 @@
 #RabbitMQ
 spring:
   rabbitmq:
-    host: b-1ba63895-34ee-4734-82b1-bbe784966c61.mq.ap-northeast-2.amazonaws.com
-    port: 5671
+    host: 13.209.56.123
+    port: 5672
     username: moaka
-    password: moaka2021!zz
-    ssl:
-      enabled: true
-    listener:
-        simple:
-          acknowledge-mode: manual
+    password: moaka2021
+#    ssl:
+#      enabled: true
+#    listener:
+#        simple:
+#          acknowledge-mode: manual
+    virtual-host: /
 
 ---
 
