@@ -49,51 +49,7 @@ public class ChunkService {
         return result;
     }
 
-    public JSONObject insertRelativeChunk(Chunk params) throws Exception {
-        JSONObject result = new JSONObject();
-        if (chunkMapper.isAuthorityOfInsertChunk(params.getSection_no(), params.getUser_no())) {
-            params.setRegdate(getToday());
-
-            // content_order 구하기
-            int content_order = chunkMapper.selectRelativeChunkNumber(params.getGroup_num()) + 1;
-            params.setContent_order(content_order);
-
-            chunkMapper.insertRelativeChunk(params);
-
-            result.put("isSuccess", true);
-            result.put("no", params.getNo());
-            result.put("regdate", params.getRegdate());
-        } else {
-            result.put("isSuccess", false);
-        }
-
-        return result;
-    }
-
-    public JSONObject retrieveChunkOfBookmarkByUserNo(int user_no) {
-        JSONObject result = new JSONObject();
-        ArrayList<Chunk> chunkList = chunkMapper.retrieveChunkOfBookmarkByUserNo(user_no);
-        for (int i = 0; i < chunkList.size(); i++) {
-            // TODO 태그 리스트
-            ArrayList<String> chunkTagList = tagMapper.retrieveChunkTagByChunkNo(chunkList.get(i).getNo());
-            chunkList.get(i).setTag_list(chunkTagList);
-
-            // TODO 댓글 리스트
-//            ArrayList<Comment> commentList = commentMapper.selectCommentOfChunk(chunkList.get(i).getNo());
-//            chunkList.get(i).setComment_list(commentList);
-
-            // TODO 관련 청크 리스트
-            ArrayList<Chunk> relativeChunkList = chunkMapper.retrieveRelativeChunkByGroupNum(chunkList.get(i).getNo());
-            chunkList.get(i).setRelative_chunk_list(relativeChunkList);
-        }
-        result.put("isSuccess", true);
-        result.put("chunk_list", chunkList);
-
-        return result;
-    }
-
     public boolean updateChunk(Chunk params) throws Exception {
-        System.out.println(params.toString());
         chunkMapper.updateChunk(params);
         return true;
     }
@@ -101,10 +57,8 @@ public class ChunkService {
     public boolean updateChunkFromChrome(Chunk params) throws Exception {
         if (chunkMapper.isAuthorityOfUpdateChunk(params.getNo(), params.getUser_no())) {
             chunkMapper.updateChunkFromChrome(params.getDescription(), params.getSection_no(), params.getNo());
-            System.out.println("true");
             return true;
         } else {
-            System.out.println("false");
             return false;
         }
     }

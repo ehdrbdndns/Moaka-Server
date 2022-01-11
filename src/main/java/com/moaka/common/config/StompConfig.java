@@ -33,20 +33,5 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
         registry.setPathMatcher(new AntPathMatcher(".")); // url을 chat/room/3 -> chat.room.3으로 참조하기 위한 설정
         registry.setApplicationDestinationPrefixes("/pub");
         registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue");
-//        registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
-//                .setSystemLogin(username)
-//                .setSystemPasscode(password)
-//                .setClientLogin(username)
-//                .setClientPasscode(password);
-//        registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
-//                .setRelayPort(61613);
-//        registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
-//                .setRelayHost(host)
-//                .setRelayPort(61613)
-//                .setSystemLogin(username)
-//                .setSystemPasscode(password)
-//                .setClientLogin(username)
-//                .setClientPasscode(password);
-        ;
     }
 }

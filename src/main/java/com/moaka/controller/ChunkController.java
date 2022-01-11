@@ -85,21 +85,6 @@ public class ChunkController {
         }
     }
 
-    @ApiOperation(value = "관련 링크 생성", notes = "관련링크 생성")
-    @PostMapping(value = "/user/insertRelativeChunk", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> insertRelativeChunk(@ApiParam(value = "청크에 들어가는 전반적인 내용", required = true)
-                                                      @RequestBody Chunk params,
-                                                      @RequestHeader Map<String, String> headers) {
-        try {
-            params.setUser_no(jwtTokenProvider.getUserNo(headers.get("bearer")));
-            JSONObject result = chunkService.insertRelativeChunk(params);
-            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
-        }
-    }
-
     @ApiOperation(value = "크롬 확장프로그램 북마크 삽입", notes = "북마크를 사용자 개인 저장소에 저장합니다.")
     @PostMapping(value = "/insertChunkFromChrome", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> insertBookmark(@ApiParam(value = "청크에 들어가는 전반적인 내용", required = true)
@@ -124,19 +109,6 @@ public class ChunkController {
         try {
             JSONObject result = new JSONObject();
             result.put("isSuccess", chunkService.updateChunkFromChrome(params));
-            return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new InternalServiceException(ErrorCode.INTERNAL_SERVICE.getErrorCode(), ErrorCode.INTERNAL_SERVICE.getErrorMessage());
-        }
-    }
-
-    @ApiOperation(value = "사용자가 북마크한 청크 리스트", notes = "사용자가 북마크한 청크 리스트")
-    @PostMapping(value = "/user/retrieveChunkOfBookmarkByUserNo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> retrieveChunkOfBookmarkByUserNo(@RequestHeader Map<String, String> headers) {
-        try {
-            int user_no = jwtTokenProvider.getUserNo(headers.get("bearer"));
-            JSONObject result = chunkService.retrieveChunkOfBookmarkByUserNo(user_no);
             return new ResponseEntity<>(result.toString(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
