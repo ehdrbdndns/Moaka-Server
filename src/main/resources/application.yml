@@ -4,7 +4,7 @@ spring:
     host: b-1ba63895-34ee-4734-82b1-bbe784966c61.mq.ap-northeast-2.amazonaws.com
     port: 5671
     username: moaka
-    password: moaka2021!zz
+    password: 
     ssl:
       enabled: true
     listener:
@@ -19,7 +19,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://moaka-db.ctldqhksk1xl.ap-northeast-2.rds.amazonaws.com:3306/moaka?serverTimezone=UTC&useUnicode=true
     username: moaka
-    password: moaka1234
+    password: 
 
 ---
 #Mybatis
@@ -47,7 +47,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: moaka.team@gmail.com
-    password: hxbigatmllcaybqs
+    password: 
     properties:
       mail:
         smtp:
